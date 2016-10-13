@@ -142,6 +142,24 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
                     case "Main Building":
                         type = Dorf2.Building.Type.MAIN_BUILDING;
                         break;
+                    case "Warehouse":
+                        type = Dorf2.Building.Type.WAREHOUSE;
+                        break;
+                    case "Granary":
+                        type = Dorf2.Building.Type.GRANARY;
+                        break;
+                    case "Rally point":
+                        type = Dorf2.Building.Type.RALLY_POINT;
+                        break;
+                    case "Embassy":
+                        type = Dorf2.Building.Type.EMBASSY;
+                        break;
+                    case "Cranny":
+                        type = Dorf2.Building.Type.CRANNY;
+                        break;
+                    case "Palisade":
+                        type = Dorf2.Building.Type.PALISADE;
+                        break;
                     default:
                         throw new UnexpectedLocalizationException();
                 }
@@ -156,24 +174,43 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
 
     @Override
     public DataToSend dorf2BuildPageEvaluator(Document document, Object... args) {
-        // Will return csrf (c=) token only. And check availability. Other data DataManipulator will get from
-        // business level.
         Map<String, String> data = new HashMap<>();
+        Integer id = (Integer) args[1];
+        logger.info("Parsing dorf2 building page for buildPlace"+id+"...");
 
         // Get any csrf token from any button.
         Elements buttons = document.select("button.green.new");
-        String onClick = buttons.first().attr("onClick");
-        String getRequest = StringUtils.substringBetween(onClick, "'", "'");
-        String csrfKeyValue = getRequest.substring(getRequest.lastIndexOf(";") + 1);
-        String csrfArr[] = csrfKeyValue.split("=");
-        data.put(csrfArr[0], csrfArr[1]);
+        String[] csrfArr;
+        String[] spotIdArr;
+        String[] buildingArr;
+        for (Element e : buttons) {
+            String onClick = e.attr("onClick");
+            String getRequest = StringUtils.substringBetween(onClick, "'", "'");
+            String csrfKeyValue = getRequest.substring(getRequest.lastIndexOf("&") + 1);
+            csrfArr = csrfKeyValue.split("=");
+            getRequest = getRequest.substring(0, getRequest.lastIndexOf("&"));
+            String spotIdKeyValue = getRequest.substring(getRequest.lastIndexOf("&") + 1);
+            spotIdArr = spotIdKeyValue.split("=");
+            getRequest = getRequest.substring(0, getRequest.lastIndexOf("&"));
+            getRequest = getRequest.substring(getRequest.lastIndexOf("?")+ 1);
+            String buildingKeyValue = getRequest.substring(getRequest.lastIndexOf("&") + 1);
+            buildingArr = buildingKeyValue.split("=");
 
-        // Check availability.
-        Pattern p = Pattern.compile("");
-                // fail
-        // reform DataToSend to array (yes, dude, make array of Maps)
-        // or reform the tree with sending data to parsers.
+            logger.debug("\t available building IDs (not all): " + buildingArr[1]);
+            if (buildingArr[1].equals(String.valueOf(id))) {
+                data.put(buildingArr[0], buildingArr[1]);
+                data.put(spotIdArr[0], spotIdArr[1]);
+                data.put(csrfArr[0], csrfArr[1]);
+                break;
+            }
+        }
 
+        if (data.isEmpty()) {
+            throw new WrongBuildingIdException("Button with building id is not found");
+            // Reasons? No free slots, wrong id (building with this id is never existed),
+            // no required buildings. Or a building is fully upgraded. Or a building is built
+            // on another slot.
+        }
 
         return new DataToSend(data, DataToSend.Type.GET);
     }

@@ -21,56 +21,24 @@ public class CentralImpl implements Central {
     private DataManipulatorT42Impl dataManipulator;
 
     @Override
-    public void login() {
-        try {
-            documentEvaluator.login();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void login() throws IOException {
+        documentEvaluator.login();
     }
 
     @Override
-    public void dorf1Build(int id) {
-        try {
-            dataManipulator.dorf1Build.invoke(1);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void dorf1Build(int id) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
+        dataManipulator.dorf1Build.invoke(id);
+
     }
 
     @Override
-    public void getBuldings() {
-        try {
-            dataManipulator.dorf2.invoke();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    public void getBuldings() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
+        dataManipulator.dorf2.invoke();
     }
 
     @Override
-    public void dorf2Build(int idOfPlace, Dorf2.Building.Type whatToBuild) {
-        try {
-            dataManipulator.dorf2Build.invoke(idOfPlace, whatToBuild);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    public void dorf2Build(int idOfPlace, Dorf2.Building.Type whatToBuild) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
+        //
+        dataManipulator.dorf2Build.invoke(idOfPlace, whatToBuild.getId());
     }
 }

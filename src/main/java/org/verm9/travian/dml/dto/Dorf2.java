@@ -2,9 +2,7 @@ package org.verm9.travian.dml.dto;
 
 import org.verm9.travian.dml.WrongBuildingIdException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UnknownFormatConversionException;
+import java.util.*;
 
 /**
  * Created by nonu on 10/5/2016.
@@ -16,17 +14,32 @@ public class Dorf2 {
         private Type type;
         private int level;
 
+
+        // The enum holds a bunch of metadata about buildings.
         public enum Type {
             NO_DATA(0, -1),
-            MAIN_BUILDING(20, 0);
+            MAIN_BUILDING(20, 26),
+            WAREHOUSE(20, 10),
+            GRANARY(20, 11),
+            RALLY_POINT(20,16),
+            EMBASSY(20, 18),
+            CRANNY(20, 23),
+            PALISADE(20, 33);
 
+            Type(int maxLevel, int id, Building... requirements) {
+                this.maxLevel = maxLevel;
+                this.id = id;
+                this.requirements = new LinkedList<>(Arrays.asList(requirements));
+            }
             Type(int maxLevel, int id) {
                 this.maxLevel = maxLevel;
                 this.id = id;
+                this.requirements = null;
             }
 
             private final int maxLevel;
             private final int id;
+            private final List<Building> requirements;
 
             public int getMaxLevel() {
                 return maxLevel;

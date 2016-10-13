@@ -556,11 +556,11 @@ public class HttpConnection implements Connection {
 
             // Todo: even cookies with wrong path will be attach in this way. Another cookie params are not counted too.
             HttpConnection.cookies.putAll( response.cookies() );
-            logger.debug("current cookie:" + response.cookies().toString());
+            //logger.debug("current cookie:" + response.cookies().toString());
 
             HttpConnection.referrer = response.url().toString();
-            logger.debug("cookie: " + HttpConnection.cookies.toString());
-            logger.debug("referrer: " + HttpConnection.referrer);
+            //logger.debug("cookie: " + HttpConnection.cookies.toString());
+            //logger.debug("referrer: " + HttpConnection.referrer);
             return response;
         }
 

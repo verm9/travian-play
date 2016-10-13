@@ -2,6 +2,8 @@ package org.verm9.travian.dml;
 
 
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
  * Created by nonu on 9/30/2016.
  */
 abstract public class InvocableTreeNode {
+    private static final Logger logger = LoggerFactory.getLogger(InvocableTreeNode.class);
     protected static InvocableTreeNode currentNode;
 
     private InvocableTreeNode parent;
@@ -41,7 +44,7 @@ abstract public class InvocableTreeNode {
      */
     public DataToSend invoke(Object... args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         DataToSend data = null;
-        if (this.parent != null) {
+        if (this.parent != null && this.parent != currentNode) {
             data = this.parent.invoke(args);
         }
 

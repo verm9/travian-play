@@ -2,6 +2,8 @@ package org.verm9.travian.dml;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.verm9.travian.dml.dto.Dorf2;
 
@@ -9,17 +11,19 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  * Created by nonu on 9/30/2016.
  */
 public class DataManipulatorT42Impl implements DataManipulator {
+    private static final Logger LOG = getLogger(DataManipulatorT42Impl.class);
 
     // set up in spring-app.xml
     private String server;
 
     @Autowired
     private DocumentEvaluator documentEvaluator;
-
 
 
     public InvocableTreeNode dorf1;
@@ -32,6 +36,8 @@ public class DataManipulatorT42Impl implements DataManipulator {
     public void init() {
         dorf1 = new InvocableTreeNode(documentEvaluator, null) {
             protected Document execute(Object... args) throws IOException {
+                InvocableTreeNode.currentNode = this;
+                LOG.info("Going to " + server + "/dorf1.php");
                 return Jsoup.connect(server + "/dorf1.php")
                         .get();
             }
@@ -42,6 +48,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
             @Override
             protected Document execute(Object... args) throws IOException {
                 Integer id = (Integer) ((Object[]) args[1])[0];
+                LOG.info("Going to " + server + "/build.php?id=" + id);
                 return Jsoup.connect(server + "/build.php?id=" + id)
                         .get();
             }
@@ -58,6 +65,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
                     if (i++ == 0)
                         build += "&";
                 }
+                LOG.info("Going to " + server + build);
                 return Jsoup.connect(server + build)
                         .get();
             }
@@ -66,6 +74,8 @@ public class DataManipulatorT42Impl implements DataManipulator {
         dorf2 = new InvocableTreeNode(documentEvaluator, dorf1, "dorf2Evaluator") {
             @Override
             protected Document execute(Object... args) throws IOException {
+                InvocableTreeNode.currentNode = this;
+                LOG.info("Going to " + server + "/dorf2.php");
                 return Jsoup.connect(server + "/dorf2.php")
                         .get();
             }
@@ -75,6 +85,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
             @Override
             protected Document execute(Object... args) throws IOException {
                 Integer id = (Integer) ((Object[]) args[1])[0];
+                LOG.info("Going to " + server + "/build.php?id=" + id);
                 return Jsoup.connect(server + "/build.php?id=" + id)
                         .get();
             }
@@ -85,13 +96,11 @@ public class DataManipulatorT42Impl implements DataManipulator {
             protected Document execute(Object... args) throws IOException {
                 DataToSend data = (DataToSend) args[0];
                 Integer idOfPlace = (Integer) ((Object[]) args[1])[0];
-                Dorf2.Building.Type type = (Dorf2.Building.Type) ((Object[]) args[1])[1];
+                Integer type = (Integer) ((Object[]) args[1])[1];
                 String build = "/dorf2.php?";
-                build += "%D0%B0=" + idOfPlace;
-                build += "&id=" + type.getId();
-                build += "&c=";
-                build += data.getData().get("c"); // csrf from evaluator
+                build = build + "а=" + data.getData().get("а") + "&id=" + data.getData().get("id") + "&c=" + data.getData().get("c");
 
+                LOG.info("Going to " + server + build);
                 return Jsoup.connect(server + build)
                         .get();
             }
