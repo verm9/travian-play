@@ -10,11 +10,11 @@ import java.io.IOException;
 public interface DocumentEvaluator {
     void login() throws IOException;
 
-    void dorf1Evaluator(Document document);
+    void dorf1Evaluator(Document document, Object... args);
 
-    DataToSend dorf1BuildPageEvaluator(Document document);
+    DataToSend dorf1BuildPageEvaluator(Document document, Object... args);
 
-    void dorf2Evaluator(Document document);
+    void dorf2Evaluator(Document document, Object... args);
 
-    DataToSend dorf2BuildPageEvaluator(Document document);
+    DataToSend dorf2BuildPageEvaluator(Document document, Object... args);
 }

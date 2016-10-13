@@ -51,7 +51,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     }
 
     @Override
-    public void dorf1Evaluator(Document document) {
+    public void dorf1Evaluator(Document document, Object... args) {
         logger.info("Parsing dorf1...");
         Elements resources = null;
         try {
@@ -104,7 +104,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     }
 
     @Override
-    public DataToSend dorf1BuildPageEvaluator(Document document) {
+    public DataToSend dorf1BuildPageEvaluator(Document document, Object... args) {
         Elements button = document.select("button.green.small");
         String onclick = button.attr("onclick");
 
@@ -121,7 +121,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     }
 
     @Override
-    public void dorf2Evaluator(Document document) {
+    public void dorf2Evaluator(Document document, Object... args) {
         logger.info("Parsing dorf2...");
         Elements buildings = document.getElementById("clickareas").getElementsByTag("area");
 
@@ -155,7 +155,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     }
 
     @Override
-    public DataToSend dorf2BuildPageEvaluator(Document document) {
+    public DataToSend dorf2BuildPageEvaluator(Document document, Object... args) {
         // Will return csrf (c=) token only. And check availability. Other data DataManipulator will get from
         // business level.
         Map<String, String> data = new HashMap<>();

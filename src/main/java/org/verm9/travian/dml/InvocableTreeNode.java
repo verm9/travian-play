@@ -50,7 +50,7 @@ abstract public class InvocableTreeNode {
 
         // Parse it with documentEvaluator if evaluator exists.
         if (evaluator != null) {
-            data = (DataToSend) documentEvaluator.getClass().getMethod(evaluator, Document.class).invoke(documentEvaluator, document);
+            data = (DataToSend) documentEvaluator.getClass().getMethod(evaluator, Document.class, Object[].class).invoke(documentEvaluator, document, args);
         }
         return data;
     }
