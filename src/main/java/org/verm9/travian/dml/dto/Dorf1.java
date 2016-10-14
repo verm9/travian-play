@@ -43,7 +43,8 @@ public class Dorf1 {
             WOODCUTTER,
             CLAY_PIT,
             IRON_MINE,
-            CROPLAND
+            CROPLAND,
+            FULLY_UPGRADED  // there is no easy way to understand which one exactly fully upgraded field is
         }
 
         @Override

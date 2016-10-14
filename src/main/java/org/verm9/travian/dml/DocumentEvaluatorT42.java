@@ -88,14 +88,21 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
                 case "Cropland":
                     resourceField.setType(ResourceField.ResourceType.CROPLAND);
                     break;
+                case "The field is in the maximum level":
+                    resourceField.setType(ResourceField.ResourceType.FULLY_UPGRADED);
+                    break;
                 default:
                     throw new UnexpectedLocalizationException();
             }
 
             Matcher m = p.matcher(div.html());
             m.find();
-            int resourceLevel = Integer.parseInt(m.group(1));
-            resourceField.setLevel(resourceLevel);
+            if (resourceField.getType() == ResourceField.ResourceType.FULLY_UPGRADED) {
+                resourceField.setLevel(20); // todo: check if capital
+            } else {
+                int resourceLevel = Integer.parseInt(m.group(1));
+                resourceField.setLevel(resourceLevel);
+            }
             result.put(id, resourceField);
         }
 
@@ -108,8 +115,17 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
         Elements button = document.select("button.green.small");
         String onclick = button.attr("onclick");
 
+        // todo: throw for no resource
+        // todo: throw for full building queue (in game)
+        if (document.getElementById("build_value").nextElementSibling().html().contains("The building is at the maximum level.")) {
+            throw new BuildingAtTheMaximumLevelException("");
+        }
+
         // ?%D0%B0=2&c=0Mp
         onclick = onclick.substring(onclick.lastIndexOf("?") + 1);
+        if (onclick.equals("")) {
+            throw new BuildingQueueIsFullException("");
+        }
         onclick = onclick.substring(0, onclick.lastIndexOf("'"));
         String[] keyValue = onclick.split("&");
         Map<String, String> data = new HashMap<>();
@@ -117,6 +133,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
             String[] split = s.split("=");
             data.put(split[0], split[1]);
         }
+
         return new DataToSend(data, DataToSend.Type.GET);
     }
 

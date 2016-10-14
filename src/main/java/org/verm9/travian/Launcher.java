@@ -19,8 +19,8 @@ public class Launcher {
         try {
             central.login();
 
-            central.dorf1Build(4);
-            central.dorf2Build(24, Dorf2.Building.Type.WAREHOUSE);
+            central.dorf1Build(5);
+            //central.dorf2Build(24, Dorf2.Building.Type.WAREHOUSE);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {

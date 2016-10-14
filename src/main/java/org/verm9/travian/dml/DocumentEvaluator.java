@@ -12,7 +12,7 @@ public interface DocumentEvaluator {
 
     void dorf1Evaluator(Document document, Object... args);
 
-    DataToSend dorf1BuildPageEvaluator(Document document, Object... args);
+    DataToSend dorf1BuildPageEvaluator(Document document, Object... args) throws BuildingAtTheMaximumLevelException;
 
     void dorf2Evaluator(Document document, Object... args);
 
