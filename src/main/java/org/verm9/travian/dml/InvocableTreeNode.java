@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
 
 /**
  * Created by nonu on 9/30/2016.
@@ -23,6 +24,8 @@ abstract public class InvocableTreeNode {
 
     private InvocableTreeNode parent;
     private String evaluator;
+
+    private Random random = new Random();
 
     private DocumentEvaluator documentEvaluator;
 
@@ -50,6 +53,11 @@ abstract public class InvocableTreeNode {
 
         // Do a request.
         Document document = this.execute(data, args);
+        try {
+            Thread.sleep(random.nextInt(1400)+300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // Parse it with documentEvaluator if evaluator exists.
         if (evaluator != null) {

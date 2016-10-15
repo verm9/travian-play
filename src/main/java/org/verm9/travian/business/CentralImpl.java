@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.verm9.travian.dml.BuildingAtTheMaximumLevelException;
+import org.verm9.travian.dml.BuildingQueueIsFullException;
 import org.verm9.travian.dto.*;
 
 import java.io.IOException;
@@ -30,8 +32,8 @@ public class CentralImpl implements Central {
         Village currentVillage = getCurrentVillage();
         LOG.info("I'm up to the main loop.");
         while(true) {
+            BuildingOrder order = currentVillage.getBuildingQueue().poll();
             try {
-                BuildingOrder order = currentVillage.getBuildingQueue().poll();
                 if (order != null) {
                     if (order.getWhat() != null) {
                         // Dorf2 build order.
@@ -44,7 +46,11 @@ public class CentralImpl implements Central {
 
                 Thread.sleep(15);
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                Throwable cause = e.getCause();
+                if (cause instanceof BuildingQueueIsFullException) {
+                    LOG.warn("Full building queue when was building " + order.getWhat()+ " on " + order.getWhere());
+                    currentVillage.getBuildingQueue().add(order); // Send it back to the queue.
+                }
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {

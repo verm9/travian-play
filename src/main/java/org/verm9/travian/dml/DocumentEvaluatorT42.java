@@ -120,7 +120,6 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
         String onclick = button.attr("onclick");
 
         // todo: throw for no resource
-        // todo: throw for full building queue (in game)
         if (document.getElementById("build_value").nextElementSibling().html().contains("The building is at the maximum level.")) {
             throw new BuildingAtTheMaximumLevelException("");
         }
@@ -181,6 +180,63 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
                     case "Palisade":
                         type = Dorf2.Building.Type.PALISADE;
                         break;
+                    case "Sawmill":
+                        type = Dorf2.Building.Type.SAWMILL;
+                        break;
+                    case "Brickworks":
+                        type = Dorf2.Building.Type.BRICKWORKS;
+                        break;
+                    case "Iron Foundry":
+                        type = Dorf2.Building.Type.IRON_FOUNDRY;
+                        break;
+                    case "Grain Mill":
+                        type = Dorf2.Building.Type.GRAIN_MILL;
+                        break;
+                    case "Bakery":
+                        type = Dorf2.Building.Type.BAKERY;
+                        break;
+                    case "Tournament Square":
+                        type = Dorf2.Building.Type.TOURNAMENT_SQUARE;
+                        break;
+                    case "Marketplace":
+                        type = Dorf2.Building.Type.MARKETPLACE;
+                        break;
+                    case "Barracks":
+                        type = Dorf2.Building.Type.BARRACKS;
+                        break;
+                    case "Residence":
+                        type = Dorf2.Building.Type.RESIDENCE;
+                        break;
+                    case "Treasury":
+                        type = Dorf2.Building.Type.TREASURY;
+                        break;
+                    case "Trapper":
+                        type = Dorf2.Building.Type.TRAPPER;
+                        break;
+                    case "Heromansion":
+                        type = Dorf2.Building.Type.HEROMANSION;
+                        break;
+                    case "Academy":
+                        type = Dorf2.Building.Type.ACADEMY;
+                        break;
+                    case "Smithy":
+                        type = Dorf2.Building.Type.SMITHY;
+                        break;
+                    case "Workshop":
+                        type = Dorf2.Building.Type.WORKSHOP;
+                        break;
+                    case "Town Hall":
+                        type = Dorf2.Building.Type.TOWN_HALL;
+                        break;
+                    case "Stable":
+                        type = Dorf2.Building.Type.STABLE;
+                        break;
+                    case "Trade Office":
+                        type = Dorf2.Building.Type.TRADE_OFFICE;
+                        break;
+
+
+
                     default:
                         throw new UnexpectedLocalizationException();
                 }
@@ -200,7 +256,12 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
         Integer placeId = (Integer) args[0];
         logger.info("Parsing dorf2 building page for buildPlace"+placeId+"...");
 
-        // Get any csrf token from any button.
+        // Check if building queue can get one more building
+        Element first = document.select("div#contract").first();
+        if (first.html().contains("All Workers are busy.")) {
+            throw new BuildingQueueIsFullException("");
+        }
+
         boolean isUpgrade = false;
         Elements buttons = document.select("button.green.new"); // "new" for new buildings
         if (buttons.isEmpty()) {
