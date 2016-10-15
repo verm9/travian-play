@@ -96,7 +96,11 @@ public class DataManipulatorT42Impl implements DataManipulator {
                 Integer idOfPlace = (Integer) ((Object[]) args[1])[0];
                 Integer type = (Integer) ((Object[]) args[1])[1];
                 String build = "/dorf2.php?";
-                build = build + "а=" + data.getData().get("а") + "&id=" + data.getData().get("id") + "&c=" + data.getData().get("c");
+                if (data.getData().containsKey("id")) { // build new
+                    build = build + "а=" + data.getData().get("а") + "&id=" + data.getData().get("id") + "&c=" + data.getData().get("c");
+                } else { // upgrade
+                    build = build + "а=" + data.getData().get("а") + "&c=" + data.getData().get("c");
+                }
 
                 LOG.info("Going to " + server + build);
                 return Jsoup.connect(server + build)

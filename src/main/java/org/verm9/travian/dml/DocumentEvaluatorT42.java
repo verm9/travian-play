@@ -169,7 +169,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
                     case "Granary":
                         type = Dorf2.Building.Type.GRANARY;
                         break;
-                    case "Rally point":
+                    case "Rally Point":
                         type = Dorf2.Building.Type.RALLY_POINT;
                         break;
                     case "Embassy":
@@ -197,32 +197,52 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     public DataToSend dorf2BuildPageEvaluator(Document document, Object... args) {
         Map<String, String> data = new HashMap<>();
         Integer id = (Integer) args[1];
-        logger.info("Parsing dorf2 building page for buildPlace"+id+"...");
+        Integer placeId = (Integer) args[0];
+        logger.info("Parsing dorf2 building page for buildPlace"+placeId+"...");
 
         // Get any csrf token from any button.
-        Elements buttons = document.select("button.green.new");
+        boolean isUpgrade = false;
+        Elements buttons = document.select("button.green.new"); // "new" for new buildings
+        if (buttons.isEmpty()) {
+            buttons = document.select("button.green.small");  // "small" for building to upgrade
+            isUpgrade = true;
+        }
         String[] csrfArr;
         String[] spotIdArr;
-        String[] buildingArr;
+        String[] buildingArr = new String[2];
         for (Element e : buttons) {
             String onClick = e.attr("onClick");
             String getRequest = StringUtils.substringBetween(onClick, "'", "'");
             String csrfKeyValue = getRequest.substring(getRequest.lastIndexOf("&") + 1);
             csrfArr = csrfKeyValue.split("=");
             getRequest = getRequest.substring(0, getRequest.lastIndexOf("&"));
-            String spotIdKeyValue = getRequest.substring(getRequest.lastIndexOf("&") + 1);
-            spotIdArr = spotIdKeyValue.split("=");
-            getRequest = getRequest.substring(0, getRequest.lastIndexOf("&"));
-            getRequest = getRequest.substring(getRequest.lastIndexOf("?")+ 1);
-            String buildingKeyValue = getRequest.substring(getRequest.lastIndexOf("&") + 1);
-            buildingArr = buildingKeyValue.split("=");
+            if (!isUpgrade) {
+                String spotIdKeyValue = getRequest.substring(getRequest.lastIndexOf("&") + 1);
+                spotIdArr = spotIdKeyValue.split("=");
 
-            logger.debug("\t available building IDs (not all): " + buildingArr[1]);
-            if (buildingArr[1].equals(String.valueOf(id))) {
-                data.put(buildingArr[0], buildingArr[1]);
+                getRequest = getRequest.substring(0, getRequest.lastIndexOf("&"));
+                getRequest = getRequest.substring(getRequest.lastIndexOf("?") + 1);
+                String buildingKeyValue = getRequest.substring(getRequest.lastIndexOf("&") + 1);
+                buildingArr = buildingKeyValue.split("=");
+                logger.debug("\t available building IDs (not all): " + buildingArr[1]);
+            } else {
+                getRequest = getRequest.substring(getRequest.lastIndexOf("?")+1);
+                String spotIdKeyValue = getRequest.substring(getRequest.lastIndexOf("?") + 1);
+                spotIdArr = spotIdKeyValue.split("=");
+            }
+
+
+            if (isUpgrade) {
                 data.put(spotIdArr[0], spotIdArr[1]);
                 data.put(csrfArr[0], csrfArr[1]);
-                break;
+            } else {
+                // there are several buttons with different buildings
+                if (buildingArr[1].equals(String.valueOf(id))) {
+                    data.put(spotIdArr[0], spotIdArr[1]);
+                    data.put(buildingArr[0], buildingArr[1]);
+                    data.put(csrfArr[0], csrfArr[1]);
+                    break;
+                }
             }
         }
 
@@ -237,15 +257,15 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     }
 
 
-    private Map<Village.Resource, Integer> parseResourceCount(Document document) {
+    private Map<Village.Resource, Long> parseResourceCount(Document document) {
         if (document.getElementById("l1") == null) {
             throw new UnexpectedPageException();
         }
-        Map<Village.Resource, Integer> result = new HashMap<>(4);
-        result.put( Village.Resource.WOOD, Integer.parseInt(document.getElementById("l1").text()) );
-        result.put( Village.Resource.CLAY, Integer.parseInt(document.getElementById("l2").text()) );
-        result.put( Village.Resource.IRON, Integer.parseInt(document.getElementById("l3").text()) );
-        result.put( Village.Resource.CROP, Integer.parseInt(document.getElementById("l4").text()) );
+        Map<Village.Resource, Long> result = new HashMap<>(4);
+        result.put( Village.Resource.WOOD, Long.parseLong(document.getElementById("l1").text()) );
+        result.put( Village.Resource.CLAY, Long.parseLong(document.getElementById("l2").text()) );
+        result.put( Village.Resource.IRON, Long.parseLong(document.getElementById("l3").text()) );
+        result.put( Village.Resource.CROP, Long.parseLong(document.getElementById("l4").text()) );
 
         return result;
     }

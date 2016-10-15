@@ -1,7 +1,6 @@
 package org.verm9.travian.dto;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by nonu on 10/5/2016.
@@ -9,13 +8,15 @@ import java.util.Map;
 public class Village {
     private Dorf1 dorf1 = new Dorf1();
     private Dorf2 dorf2 = new Dorf2();
-    private Map<Resource, Integer> availableResources = new HashMap<>(4);
+    private Map<Resource, Long> availableResources = new HashMap<>(4);
+    private boolean isCapital = true;
+    private Queue<BuildingOrder> buildingQueue = new LinkedList<>();
 
     public Village() {
-        availableResources.put(Resource.WOOD, -1);
-        availableResources.put(Resource.CLAY, -1);
-        availableResources.put(Resource.IRON, -1);
-        availableResources.put(Resource.CROP, -1);
+        availableResources.put(Resource.WOOD, -1L);
+        availableResources.put(Resource.CLAY, -1L);
+        availableResources.put(Resource.IRON, -1L);
+        availableResources.put(Resource.CROP, -1L);
     }
 
     public Dorf1 getDorf1() {
@@ -34,11 +35,11 @@ public class Village {
         this.dorf2 = dorf2;
     }
 
-    public Map<Resource, Integer> getAvailableResources() {
+    public Map<Resource, Long> getAvailableResources() {
         return availableResources;
     }
 
-    public void setAvailableResources(Map<Resource, Integer> availableResources) {
+    public void setAvailableResources(Map<Resource, Long> availableResources) {
         this.availableResources = availableResources;
     }
 
@@ -51,12 +52,28 @@ public class Village {
     }
 
     public boolean areAvailableResourcesEmpty() {
-        for (Integer i : availableResources.values()) {
-            if (i != -1) {
+        for (Long i : availableResources.values()) {
+            if (i != -1L) {
                 return false;
             }
         }
         return true;
+    }
+
+    public boolean isCapital() {
+        return isCapital;
+    }
+
+    public void setCapital(boolean capital) {
+        isCapital = capital;
+    }
+
+    public Queue<BuildingOrder> getBuildingQueue() {
+        return buildingQueue;
+    }
+
+    public void setBuildingQueue(Queue<BuildingOrder> buildingQueue) {
+        this.buildingQueue = buildingQueue;
     }
 
     public enum Resource {
