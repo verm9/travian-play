@@ -1,4 +1,4 @@
-package org.verm9.travian.dml.dto;
+package org.verm9.travian.dto;
 
 import java.util.HashMap;
 import java.util.Map;

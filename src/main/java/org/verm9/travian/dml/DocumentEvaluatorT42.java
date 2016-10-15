@@ -9,9 +9,10 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.verm9.travian.dml.dto.Dorf1;
-import org.verm9.travian.dml.dto.Dorf2;
-import org.verm9.travian.dml.dto.Village;
+import org.verm9.travian.business.Central;
+import org.verm9.travian.dto.Dorf1;
+import org.verm9.travian.dto.Dorf2;
+import org.verm9.travian.dto.Village;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.verm9.travian.dml.dto.Dorf1.*;
+import static org.verm9.travian.dto.Dorf1.*;
 
 /**
  * Created by nonu on 9/30/2016.
@@ -32,8 +33,9 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
 
     @Autowired
     private DataManipulatorT42Impl dataManipulator;
+    @Autowired
+    private Central central;
 
-    private Village village = new Village();
 
     @Override
     public void login() throws IOException{
@@ -106,8 +108,10 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
             result.put(id, resourceField);
         }
 
-        village.setAvailableResources( parseResourceCount(document) );
-        village.getDorf1().setFields(result);
+
+        central.getCurrentVillage().setAvailableResources( parseResourceCount(document) );
+        central.getCurrentVillage().getDorf1().setFields(result);
+
     }
 
     @Override
@@ -185,8 +189,8 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
             Dorf2.Building building = new Dorf2.Building(type, level);
             result.put(id, building);
         }
-        village.setAvailableResources( parseResourceCount(document) );
-        village.getDorf2().setBuildings(result);
+        central.getCurrentVillage().setAvailableResources( parseResourceCount(document) );
+        central.getCurrentVillage().getDorf2().setBuildings(result);
     }
 
     @Override

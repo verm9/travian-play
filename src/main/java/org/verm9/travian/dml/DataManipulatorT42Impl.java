@@ -3,9 +3,7 @@ package org.verm9.travian.dml;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.verm9.travian.dml.dto.Dorf2;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;

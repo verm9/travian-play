@@ -1,4 +1,4 @@
-package org.verm9.travian.dml.dto;
+package org.verm9.travian.dto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +40,23 @@ public class Village {
 
     public void setAvailableResources(Map<Resource, Integer> availableResources) {
         this.availableResources = availableResources;
+    }
+
+    public boolean isDorf1Empty() {
+        return dorf1.getFields().isEmpty();
+    }
+
+    public boolean isDorf2Empty() {
+        return dorf2.getBuildings().isEmpty();
+    }
+
+    public boolean areAvailableResourcesEmpty() {
+        for (Integer i : availableResources.values()) {
+            if (i != -1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public enum Resource {

@@ -2,43 +2,27 @@ package org.verm9.travian.business;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.verm9.travian.dml.DataManipulatorT42Impl;
-import org.verm9.travian.dml.DocumentEvaluator;
-import org.verm9.travian.dml.dto.Dorf2;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import org.verm9.travian.dto.GameData;
+import org.verm9.travian.dto.Village;
 
 /**
- * Created by nonu on 10/2/2016.
+ * Created by nonu on 10/14/2016.
  */
 @Component
 public class CentralImpl implements Central {
 
     @Autowired
-    private DocumentEvaluator documentEvaluator;
-    @Autowired
-    private DataManipulatorT42Impl dataManipulator;
+    private TravianApi travianApi;
+
+    private GameData gameData = new GameData();
 
     @Override
-    public void login() throws IOException {
-        documentEvaluator.login();
+    public Village getCurrentVillage() {
+        return gameData.getVillage();
     }
 
     @Override
-    public void dorf1Build(int id) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
-        dataManipulator.dorf1Build.invoke(id);
+    public void buildAllToMaxLevel() {
 
-    }
-
-    @Override
-    public void getBuldings() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
-        dataManipulator.dorf2.invoke();
-    }
-
-    @Override
-    public void dorf2Build(int idOfPlace, Dorf2.Building.Type whatToBuild) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
-        //
-        dataManipulator.dorf2Build.invoke(idOfPlace, whatToBuild.getId());
     }
 }
