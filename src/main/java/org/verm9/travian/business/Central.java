@@ -18,4 +18,6 @@ public interface Central {
     void buildAllToMaxLevel();
 
     void mainCycle();
+
+    Village getVillage(Integer id);
 }

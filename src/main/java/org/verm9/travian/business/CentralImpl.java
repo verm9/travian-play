@@ -68,6 +68,11 @@ public class CentralImpl implements Central {
     }
 
     @Override
+    public Village getVillage(Integer id) {
+        return gameData.getVillage(id);
+    }
+
+    @Override
     public Village setCurrentVillage(Integer villageId) {
         gameData.setCurrentVillageId(villageId);
         return gameData.getCurrentVillage();

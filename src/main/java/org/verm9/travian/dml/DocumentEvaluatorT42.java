@@ -2,6 +2,7 @@ package org.verm9.travian.dml;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
@@ -319,6 +320,26 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
         }
 
         return new DataToSend(data, DataToSend.Type.GET);
+    }
+
+    public DataToSend statisticsGetMyProfilePage(Document document, Object... args) {
+        Map<String, String> data = new HashMap<>();
+        Elements tdWithHref = document.select("table#player>tbody>tr.hl>td.pla");
+        String id = StringUtils.substringBetween(tdWithHref.html(), "spieler.php?uid=", "\">");
+        data.put("uid", id);
+        return new DataToSend(data);
+    }
+
+    public void setCapitalFromProfilePage(Document document, Object... args) {
+        Element tableWithVillages = document.select("table#villages>tbody").first();
+        for (Element e : tableWithVillages.getElementsByTag("tr")) {
+            Integer id = Integer.parseInt( StringUtils.substringBetween(e.html(), "\"karte.php?d=", "\">") );
+            if (e.html().contains("mainVillage")) {
+                central.getVillage(id).setCapital(true);
+            } else {
+                central.getVillage(id).setCapital(false);
+            }
+        }
     }
 
 

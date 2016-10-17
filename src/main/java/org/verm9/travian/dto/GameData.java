@@ -39,4 +39,8 @@ public class GameData {
         }
 
     }
+
+    public Village getVillage(Integer id) {
+        return villages.get(id);
+    }
 }

@@ -16,4 +16,8 @@ public interface TravianApi {
     void dorf1Build(int id) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException;
 
     void dorf2Build(int idOfPlace, Dorf2.Building.Type whatToBuild) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException;
+
+    void changeVillage(int id) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException;
+
+    void setCapital() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException;
 }

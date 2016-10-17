@@ -30,6 +30,9 @@ public class DataManipulatorT42Impl implements DataManipulator {
     public InvocableTreeNode dorf2;
     public InvocableTreeNode dorf2BuildPage;
     public InvocableTreeNode dorf2Build;
+    public InvocableTreeNode changeVillage;
+    public InvocableTreeNode getStatisticsPage;
+    public InvocableTreeNode getPlayerPage;
     @PostConstruct
     public void init() {
         dorf1 = new InvocableTreeNode(documentEvaluator, null) {
@@ -107,8 +110,31 @@ public class DataManipulatorT42Impl implements DataManipulator {
                         .get();
             }
         };
+        changeVillage = new InvocableTreeNode(documentEvaluator, dorf1, "dorf1Evaluator") {
+            @Override
+            protected Document execute(Object... args) throws IOException {
+                Integer id = (Integer) ((Object[]) args[1])[0];
+                LOG.info("Going to " + server + "/dorf1.php?newdid=" + id+ "&");
+                return Jsoup.connect(server + "/dorf1.php?newdid=" + id+ "&")
+                        .get();
+            }
+        };
+        getStatisticsPage = new InvocableTreeNode(documentEvaluator, dorf1, "statisticsGetMyProfilePage") {
+            protected Document execute(Object... args) throws IOException {
+                LOG.info("Going to " + server + "/statistiken.php");
+                return Jsoup.connect(server + "/statistiken.php")
+                        .get();
+            }
+        };
+        getPlayerPage = new InvocableTreeNode(documentEvaluator, getStatisticsPage, "setCapitalFromProfilePage")  {
+            protected Document execute(Object... args) throws IOException {
+                DataToSend data = (DataToSend) args[0];
+                LOG.info("Going to " + server + "/spieler.php?uid="+data.getData().get("uid"));
+                return Jsoup.connect(server + "/spieler.php?uid="+data.getData().get("uid"))
+                        .get();
+            }
+        };
     }
-
 
 
     @Override
