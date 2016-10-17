@@ -14,6 +14,7 @@ import org.verm9.travian.dto.Dorf1;
 import org.verm9.travian.dto.Dorf2;
 import org.verm9.travian.dto.Village;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,9 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     @Override
     public void dorf1Evaluator(Document document, Object... args) {
         logger.info("Parsing dorf1...");
+
+        parseVillagesList(document);
+
         Elements resources = null;
         try {
             resources = document.getElementById("rx").getElementsByTag("area");
@@ -143,6 +147,9 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     @Override
     public void dorf2Evaluator(Document document, Object... args) {
         logger.info("Parsing dorf2...");
+
+        parseVillagesList(document);
+
         Elements buildings = document.getElementById("clickareas").getElementsByTag("area");
 
         Map<Integer, Dorf2.Building> result = new HashMap<>();
@@ -234,9 +241,6 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
                     case "Trade Office":
                         type = Dorf2.Building.Type.TRADE_OFFICE;
                         break;
-
-
-
                     default:
                         throw new UnexpectedLocalizationException();
                 }
@@ -329,6 +333,21 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
         result.put( Village.Resource.CROP, Long.parseLong(document.getElementById("l4").text()) );
 
         return result;
+    }
+
+    private void parseVillagesList(Document document) {
+        Elements villageEntry = document.select("div.innerBox.content>ul>li");
+        for (Element e : villageEntry) {
+            String nameAndCooridinate = e.attr("title");
+            String name = nameAndCooridinate.substring(0, nameAndCooridinate.indexOf("(")).trim();
+            String[] coordinates = StringUtils.substringBetween(nameAndCooridinate, "(", ")").split("\\|");
+            String id = StringUtils.substringBetween(e.getElementsByTag("a").first().attr("href"), ".php?newdid=", "&");
+            if (e.attr("class").contains("active")) {
+                central.setCurrentVillage(Integer.parseInt(id));
+            }
+            Village toAdd = new Village( name, new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1])) );
+            central.addNewVillageIfNotAdded(Integer.parseInt(id), toAdd);
+        }
     }
 
     private Map<String,String> getDataFromForm(Element form) {

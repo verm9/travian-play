@@ -1,11 +1,14 @@
 package org.verm9.travian.dto;
 
+import java.awt.*;
 import java.util.*;
 
 /**
  * Created by nonu on 10/5/2016.
  */
 public class Village {
+    private String name;
+    private Point coordinates;
     private Dorf1 dorf1 = new Dorf1();
     private Dorf2 dorf2 = new Dorf2();
     private Map<Resource, Long> availableResources = new HashMap<>(4);
@@ -17,6 +20,12 @@ public class Village {
         availableResources.put(Resource.CLAY, -1L);
         availableResources.put(Resource.IRON, -1L);
         availableResources.put(Resource.CROP, -1L);
+    }
+
+    public Village(String name, Point coordinates) {
+        this();
+        this.name = name;
+        this.coordinates = coordinates;
     }
 
     public Dorf1 getDorf1() {
@@ -81,5 +90,14 @@ public class Village {
         CLAY,
         IRON,
         CROP
+    }
+
+    @Override
+    public String toString() {
+        return "Village{" +
+                "coordinates=" + coordinates +
+                ", name='" + name + '\'' +
+                ", isCapital=" + isCapital +
+                '}';
     }
 }

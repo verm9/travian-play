@@ -11,6 +11,9 @@ import java.lang.reflect.InvocationTargetException;
 public interface Central {
 
     Village getCurrentVillage();
+    Village setCurrentVillage(Integer villageId);
+
+    void addNewVillageIfNotAdded(Integer id, Village village);
 
     void buildAllToMaxLevel();
 

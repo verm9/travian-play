@@ -1,12 +1,17 @@
 package org.verm9.travian.dto;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by nonu on 10/15/2016.
  */
 public class GameData {
-    private Village village = new Village();
+    private Map<Integer, Village> villages = new HashMap<>();
+    Integer currentVillageId = -1;
 
-    public void updateVillage(Village from) {
+    public void updateCurrentVillage(Village from) {
+        Village village = getCurrentVillage();
         if (!from.isDorf1Empty()) {
             village.setDorf1( from.getDorf1() );
         }
@@ -20,7 +25,18 @@ public class GameData {
         }
     }
 
-    public Village getVillage() {
-        return village;
+    public Village getCurrentVillage() {
+        return villages.get(currentVillageId);
+    }
+
+    public void setCurrentVillageId(Integer currentVillageId) {
+        this.currentVillageId = currentVillageId;
+    }
+
+    public void addNewVillageIfNotAdded(Integer id, Village village) {
+        if (!villages.containsKey(id)) {
+            villages.put(id, village);
+        }
+
     }
 }

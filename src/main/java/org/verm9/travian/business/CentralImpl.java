@@ -1,10 +1,8 @@
 package org.verm9.travian.business;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.verm9.travian.dml.BuildingAtTheMaximumLevelException;
 import org.verm9.travian.dml.BuildingQueueIsFullException;
 import org.verm9.travian.dto.*;
 
@@ -66,7 +64,18 @@ public class CentralImpl implements Central {
 
     @Override
     public Village getCurrentVillage() {
-        return gameData.getVillage();
+        return gameData.getCurrentVillage();
+    }
+
+    @Override
+    public Village setCurrentVillage(Integer villageId) {
+        gameData.setCurrentVillageId(villageId);
+        return gameData.getCurrentVillage();
+    }
+
+    @Override
+    public void addNewVillageIfNotAdded(Integer id, Village village) {
+        gameData.addNewVillageIfNotAdded(id, village);
     }
 
     @Override
