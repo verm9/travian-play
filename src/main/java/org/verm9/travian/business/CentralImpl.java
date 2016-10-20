@@ -79,6 +79,11 @@ public class CentralImpl implements Central {
     }
 
     @Override
+    public GameData getGameData() {
+        return gameData;
+    }
+
+    @Override
     public void addNewVillageIfNotAdded(Integer id, Village village) {
         gameData.addNewVillageIfNotAdded(id, village);
     }

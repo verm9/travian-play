@@ -1,5 +1,6 @@
 package org.verm9.travian.business;
 
+import org.verm9.travian.dto.GameData;
 import org.verm9.travian.dto.Village;
 
 import java.io.IOException;
@@ -12,6 +13,8 @@ public interface Central {
 
     Village getCurrentVillage();
     Village setCurrentVillage(Integer villageId);
+
+    GameData getGameData();
 
     void addNewVillageIfNotAdded(Integer id, Village village);
 
