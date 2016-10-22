@@ -1,5 +1,7 @@
 package org.verm9.travian.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +9,10 @@ import java.util.Map;
  * Created by nonu on 10/15/2016.
  */
 public class GameData {
+    @JsonView
     private Map<Integer, Village> villages = new HashMap<>();
+
+    @JsonView
     Integer currentVillageId = -1;
 
     public void updateCurrentVillage(Village from) {

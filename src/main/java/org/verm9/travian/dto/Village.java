@@ -1,5 +1,7 @@
 package org.verm9.travian.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import java.awt.*;
 import java.util.*;
 
@@ -7,12 +9,19 @@ import java.util.*;
  * Created by nonu on 10/5/2016.
  */
 public class Village {
+    @JsonView
     private String name;
+    @JsonView
     private Point coordinates;
+    @JsonView
     private Dorf1 dorf1 = new Dorf1();
+    @JsonView
     private Dorf2 dorf2 = new Dorf2();
+    @JsonView
     private Map<Resource, Long> availableResources = new HashMap<>(4);
+    @JsonView
     private boolean isCapital = true;
+    @JsonView
     private Queue<BuildingOrder> buildingQueue = new LinkedList<>();
 
     public Village() {
