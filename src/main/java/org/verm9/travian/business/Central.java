@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by nonu on 10/14/2016.
  */
-public interface Central {
+public interface Central extends Runnable{
 
     Village getCurrentVillage();
     Village setCurrentVillage(Integer villageId);
@@ -23,4 +23,10 @@ public interface Central {
     void mainCycle();
 
     Village getVillage(Integer id);
+
+    boolean isPaused();
+
+    void setPaused(boolean paused);
+
+    boolean isRun();
 }

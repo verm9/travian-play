@@ -33,12 +33,22 @@
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library">
+      <library name="jsoup-1.9.2-modded">
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/jsoup-1.9.2.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.21" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:jcl-over-slf4j:1.7.21" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:jul-to-slf4j:1.7.21" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: ch.qos.logback:logback-classic:1.1.7" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: ch.qos.logback:logback-core:1.1.7" level="project" />
+    <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.9.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:4.3.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-beans:4.3.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-core:4.3.3.RELEASE" level="project" />

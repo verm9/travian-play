@@ -1,9 +1,7 @@
 package org.verm9.travian.ui.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.verm9.travian.business.Central;
@@ -20,6 +18,19 @@ public class AjaxController {
     @RequestMapping(value = "/ajax/getGameData", produces = MediaType.APPLICATION_JSON_VALUE)
     public GameData getGameData() {
         return central.getGameData();
+    }
+
+    @RequestMapping(value = "/ajax/switchRunningState", produces = MediaType.APPLICATION_JSON_VALUE)
+    public boolean switchRunningState() {
+        runIfNot();
+        central.setPaused( !central.isPaused() );
+        return central.isPaused();
+    }
+
+    private void runIfNot() {
+        if (!central.isRun()) {
+            central.run();
+        }
     }
 }
 

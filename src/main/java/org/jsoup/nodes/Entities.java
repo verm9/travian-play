@@ -70,7 +70,7 @@ public class Entities {
     public static Character getCharacterByName(String name) {
         return full.get(name);
     }
-    
+
     static String escape(String string, Document.OutputSettings out) {
         StringBuilder accum = new StringBuilder(string.length() * 2);
         try {

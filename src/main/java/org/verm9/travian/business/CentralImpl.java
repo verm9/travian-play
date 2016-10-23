@@ -25,13 +25,34 @@ public class CentralImpl implements Central {
 
     private GameData gameData = new GameData();
 
+    private boolean run = false;
+    private boolean paused = true;
+
+    @Override
+    public void run() {
+        run = true;
+        mainCycle();
+    }
+
     @Override
     public void mainCycle() {
-        Village currentVillage = getCurrentVillage();
         LOG.info("I'm up to the main loop.");
+
         while(true) {
-            BuildingOrder order = currentVillage.getBuildingQueue().poll();
+            BuildingOrder order = null;
+            Village currentVillage = null;
+
             try {
+                travianApi.login();
+                travianApi.setCapital();
+                currentVillage = getCurrentVillage();
+                order = currentVillage.getBuildingQueue().poll();
+                travianApi.getBuldings();
+
+                while (paused) {
+                    Thread.sleep(15);
+                }
+
                 if (order != null) {
                     if (order.getWhat() != null) {
                         // Dorf2 build order.
@@ -41,8 +62,6 @@ public class CentralImpl implements Central {
                         travianApi.dorf1Build(order.getWhere());
                     }
                 }
-
-                Thread.sleep(15);
             } catch (InvocationTargetException e) {
                 Throwable cause = e.getCause();
                 if (cause instanceof BuildingQueueIsFullException) {
@@ -102,5 +121,20 @@ public class CentralImpl implements Central {
                 getCurrentVillage().getBuildingQueue().add(new BuildingOrder(entry.getKey(), entry.getValue().getType()));
             }
         }
+    }
+
+    @Override
+    public boolean isPaused() {
+        return paused;
+    }
+
+    @Override
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
+    @Override
+    public boolean isRun() {
+        return run;
     }
 }
