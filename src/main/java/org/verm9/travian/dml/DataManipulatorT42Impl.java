@@ -39,7 +39,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
             protected Document execute(Object... args) throws IOException {
                 InvocableTreeNode.currentNode = this;
                 LOG.info("Going to " + server + "/dorf1.php");
-                return Jsoup.connect(server + "/dorf1.php")
+                return JsoupDecorator.connect(server + "/dorf1.php")
                         .get();
             }
         };
@@ -50,7 +50,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
             protected Document execute(Object... args) throws IOException {
                 Integer id = (Integer) ((Object[]) args[1])[0];
                 LOG.info("Going to " + server + "/build.php?id=" + id);
-                return Jsoup.connect(server + "/build.php?id=" + id)
+                return JsoupDecorator.connect(server + "/build.php?id=" + id)
                         .get();
             }
         };
@@ -67,7 +67,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
                         build += "&";
                 }
                 LOG.info("Going to " + server + build);
-                return Jsoup.connect(server + build)
+                return JsoupDecorator.connect(server + build)
                         .get();
             }
         };
@@ -77,7 +77,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
             protected Document execute(Object... args) throws IOException {
                 InvocableTreeNode.currentNode = this;
                 LOG.info("Going to " + server + "/dorf2.php");
-                return Jsoup.connect(server + "/dorf2.php")
+                return JsoupDecorator.connect(server + "/dorf2.php")
                         .get();
             }
         };
@@ -87,7 +87,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
             protected Document execute(Object... args) throws IOException {
                 Integer id = (Integer) ((Object[]) args[1])[0];
                 LOG.info("Going to " + server + "/build.php?id=" + id);
-                return Jsoup.connect(server + "/build.php?id=" + id)
+                return JsoupDecorator.connect(server + "/build.php?id=" + id)
                         .get();
             }
         };
@@ -106,7 +106,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
                 }
 
                 LOG.info("Going to " + server + build);
-                return Jsoup.connect(server + build)
+                return JsoupDecorator.connect(server + build)
                         .get();
             }
         };
@@ -115,22 +115,24 @@ public class DataManipulatorT42Impl implements DataManipulator {
             protected Document execute(Object... args) throws IOException {
                 Integer id = (Integer) ((Object[]) args[1])[0];
                 LOG.info("Going to " + server + "/dorf1.php?newdid=" + id+ "&");
-                return Jsoup.connect(server + "/dorf1.php?newdid=" + id+ "&")
+                return JsoupDecorator.connect(server + "/dorf1.php?newdid=" + id+ "&")
                         .get();
             }
         };
         getStatisticsPage = new InvocableTreeNode(documentEvaluator, dorf1, "statisticsGetMyProfilePage") {
+            @Override
             protected Document execute(Object... args) throws IOException {
                 LOG.info("Going to " + server + "/statistiken.php");
-                return Jsoup.connect(server + "/statistiken.php")
+                return JsoupDecorator.connect(server + "/statistiken.php")
                         .get();
             }
         };
         getPlayerPage = new InvocableTreeNode(documentEvaluator, getStatisticsPage, "setCapitalFromProfilePage")  {
+            @Override
             protected Document execute(Object... args) throws IOException {
                 DataToSend data = (DataToSend) args[0];
                 LOG.info("Going to " + server + "/spieler.php?uid="+data.getData().get("uid"));
-                return Jsoup.connect(server + "/spieler.php?uid="+data.getData().get("uid"))
+                return JsoupDecorator.connect(server + "/spieler.php?uid="+data.getData().get("uid"))
                         .get();
             }
         };
@@ -139,13 +141,13 @@ public class DataManipulatorT42Impl implements DataManipulator {
 
     @Override
     public Document getLoginPage() throws IOException {
-        return Jsoup.connect(server + "/login.php")
+        return JsoupDecorator.connect(server + "/login.php")
                 .get();
     }
 
     @Override
     public Document login(Map<String, String> data) throws IOException {
-        return Jsoup.connect(server + "/login.php")
+        return JsoupDecorator.connect(server + "/login.php")
                 .data(data)
                 .followRedirects(true) // get 302 to dorf1
                 .post();

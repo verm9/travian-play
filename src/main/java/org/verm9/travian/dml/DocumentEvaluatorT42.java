@@ -359,6 +359,9 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     private void parseVillagesList(Document document) {
         Elements villageEntry = document.select("div.innerBox.content>ul>li");
         for (Element e : villageEntry) {
+            if (e.id().contains("infoID")) {
+                continue; // most likely it is not that we want (under protection div)
+            }
             String nameAndCooridinate = e.attr("title");
             String name = nameAndCooridinate.substring(0, nameAndCooridinate.indexOf("(")).trim();
             String[] coordinates = StringUtils.substringBetween(nameAndCooridinate, "(", ")").split("\\|");

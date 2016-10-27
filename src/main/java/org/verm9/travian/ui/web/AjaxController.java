@@ -29,7 +29,7 @@ public class AjaxController {
 
     private void runIfNot() {
         if (!central.isRun()) {
-            central.run();
+            new Thread(central).start();
         }
     }
 }
