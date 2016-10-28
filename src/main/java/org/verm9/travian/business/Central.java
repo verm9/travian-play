@@ -28,5 +28,7 @@ public interface Central extends Runnable{
 
     void setPaused(boolean paused);
 
-    boolean isRun();
+    boolean isAlive();
+
+    void start();
 }

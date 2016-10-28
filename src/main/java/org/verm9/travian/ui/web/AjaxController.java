@@ -22,15 +22,10 @@ public class AjaxController {
 
     @RequestMapping(value = "/ajax/switchRunningState", produces = MediaType.APPLICATION_JSON_VALUE)
     public boolean switchRunningState() {
-        runIfNot();
+        // Assume central is always run.
         central.setPaused( !central.isPaused() );
         return central.isPaused();
     }
 
-    private void runIfNot() {
-        if (!central.isRun()) {
-            new Thread(central).start();
-        }
-    }
 }
 

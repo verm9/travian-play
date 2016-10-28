@@ -16,7 +16,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Created by nonu on 10/14/2016.
  */
 @Component
-public class CentralImpl implements Central {
+public class CentralImpl extends Thread implements Central {
 
     private static final Logger LOG = getLogger(CentralImpl.class);
 
@@ -25,12 +25,11 @@ public class CentralImpl implements Central {
 
     private GameData gameData = new GameData();
 
-    private boolean run = false;
     private boolean paused = true;
 
     @Override
     public void run() {
-        run = true;
+        LOG.info("inside");
         mainCycle();
     }
 
@@ -51,8 +50,10 @@ public class CentralImpl implements Central {
 
                 while (paused) {
                     Thread.sleep(15);
+                    System.out.println("x");
                 }
 
+                System.out.println("________________________________________________________");
                 if (order != null) {
                     if (order.getWhat() != null) {
                         // Dorf2 build order.
@@ -133,8 +134,4 @@ public class CentralImpl implements Central {
         this.paused = paused;
     }
 
-    @Override
-    public boolean isRun() {
-        return run;
-    }
 }
