@@ -19,4 +19,12 @@ public class BuildingOrder {
     public Dorf2.Building.Type getWhat() {
         return whatToBuild;
     }
+
+    @Override
+    public String toString() {
+        return "BuildingOrder{" +
+                whatToBuild +
+                " on " + whereToBuild +
+                '}';
+    }
 }

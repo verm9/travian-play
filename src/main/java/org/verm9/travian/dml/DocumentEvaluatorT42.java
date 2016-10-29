@@ -42,7 +42,17 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     @Override
     public void login() throws IOException{
         Document pageWithLoginForm = dataManipulator.getLoginPage();
-        Element loginForm = pageWithLoginForm.getElementsByClass("innerLoginBox").first().getElementsByTag("form").first();
+        Element loginForm = null;
+        try {
+            loginForm = pageWithLoginForm.getElementsByClass("innerLoginBox").first().getElementsByTag("form").first();
+        } catch (NullPointerException e) {
+            // It might be logged in already. Let's check it.
+            // Next line can throw UnexpectedPageException. Which is right if it is not a login page or page where
+            // resources are shown (these are shown on every page but login one.
+            parseResourceCount(pageWithLoginForm);
+            return;
+        }
+
         Map<String, String> formData = getDataFromForm(loginForm);
         if (!formData.containsKey("user") || !formData.containsKey("pw")) {
             throw new UnexpectedPageException();
@@ -124,7 +134,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
         Elements button = document.select("button.green.small");
         String onclick = button.attr("onclick");
 
-        // todo: throw for no resource
+        // todo: throw for no resources
         if (document.getElementById("build_value").nextElementSibling().html().contains("The building is at the maximum level.")) {
             throw new BuildingAtTheMaximumLevelException("");
         }

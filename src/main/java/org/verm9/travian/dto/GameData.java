@@ -13,7 +13,7 @@ public class GameData {
     private Map<Integer, Village> villages = new HashMap<>();
 
     @JsonView
-    Integer currentVillageId = -1;
+    private Integer currentVillageId = -1;
 
     public void updateCurrentVillage(Village from) {
         Village village = getCurrentVillage();
@@ -47,5 +47,13 @@ public class GameData {
 
     public Village getVillage(Integer id) {
         return villages.get(id);
+    }
+
+    public Map<Integer, Village> getVillages() {
+        return villages;
+    }
+
+    public void setVillages(Map<Integer, Village> villages) {
+        this.villages = villages;
     }
 }

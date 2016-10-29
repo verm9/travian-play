@@ -4,7 +4,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.verm9.travian.business.Central;
 import org.verm9.travian.business.TravianApi;
+import org.verm9.travian.controller.ApplicationController;
 import org.verm9.travian.dto.Dorf2;
+import org.verm9.travian.dto.Village;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -16,25 +18,43 @@ public class Launcher {
 
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("spring-app.xml");
-        TravianApi travianApi = context.getBean(TravianApi.class);
+        ApplicationController applicationController = context.getBean(ApplicationController.class);
         Central central = context.getBean(Central.class);
 
+
+        /*travianApi.login();
+        travianApi.setCapital();
+        //travianApi.getBuldings();
+        travianApi.dorf2Build(27, Dorf2.Building.Type.WAREHOUSE);
+        central.buildAllToMaxLevel();*/
+        new Thread(){
+            @Override
+            public void run() {
+                central.mainCycle();
+            }
+        }.start();
+
         try {
-            travianApi.login();
-            travianApi.setCapital();
-            travianApi.getBuldings(); // update village.dorf2 manually, main cycle still doesn't
-            //travianApi.dorf2Build(28, Dorf2.Building.Type.WAREHOUSE);
-            central.buildAllToMaxLevel();
-            central.mainCycle();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+            Thread.sleep(10_000);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        int villageId = applicationController.getGameData().getVillages().entrySet().iterator().next().getKey();
+        applicationController.buildAtDorf2(villageId, Dorf2.Building.Type.RALLY_POINT);
+        applicationController.switchRunningState();
+
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        applicationController.switchRunningState();
+
+
+        // Imitate view actions by calling controller directly.
+
 
     }
 }

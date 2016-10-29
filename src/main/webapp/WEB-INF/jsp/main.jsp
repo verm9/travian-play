@@ -81,7 +81,7 @@
 
     function setupStartButton(isRunning) {
         var button = $('#startButton');
-        if (isRunning == true) {
+        if (isRunning == false) {
             button[0].innerHTML = "Pause!";
             button.removeClass("btn-success");
             button.addClass("btn-warning");

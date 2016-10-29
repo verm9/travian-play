@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.verm9.travian.business.Central;
+import org.verm9.travian.controller.ApplicationController;
 import org.verm9.travian.dto.GameData;
 
 /**
@@ -13,18 +13,17 @@ import org.verm9.travian.dto.GameData;
 @RestController
 public class AjaxController {
     @Autowired
-    private Central central;
+    private ApplicationController applicationController;
 
     @RequestMapping(value = "/ajax/getGameData", produces = MediaType.APPLICATION_JSON_VALUE)
     public GameData getGameData() {
-        return central.getGameData();
+        return applicationController.getGameData();
     }
 
     @RequestMapping(value = "/ajax/switchRunningState", produces = MediaType.APPLICATION_JSON_VALUE)
     public boolean switchRunningState() {
-        // Assume central is always run.
-        central.setPaused( !central.isPaused() );
-        return central.isPaused();
+        // Assume applicationController is always run (stuck in the mainCycle).
+        return applicationController.switchRunningState();
     }
 
 }

@@ -8,7 +8,10 @@ import org.verm9.travian.dto.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -24,62 +27,94 @@ public class CentralImpl extends Thread implements Central {
     private TravianApi travianApi;
 
     private GameData gameData = new GameData();
+    private List<Village> villagesMultipliedByPriorities = new ArrayList<>();
 
     private boolean paused = true;
 
     @Override
     public void run() {
-        LOG.info("inside");
+        LOG.info("Inside run().");
         mainCycle();
     }
 
     @Override
     public void mainCycle() {
+        // Login first (and do action on start). After go to the main loop.
+        // TODO: If login session is expired it has to login again.
+        LOG.info("Doing init actions.");
+        try {
+            travianApi.login();
+            travianApi.setCapital();
+        } catch (IOException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            LOG.error(e.getMessage());
+        }
+
+        // Init advanced data which is used to perform advanced actions.
+        initApplicationData();
+
+        // Main loop.
+        Random random = new Random();
+        BuildingOrder buildingOrder = null;
+        Village performNextOrderOnThisVillage = null;
         LOG.info("I'm up to the main loop.");
-
         while(true) {
-            BuildingOrder order = null;
-            Village currentVillage = null;
-
             try {
-                travianApi.login();
-                travianApi.setCapital();
-                currentVillage = getCurrentVillage();
-                order = currentVillage.getBuildingQueue().poll();
-                travianApi.getBuldings();
+                waitIfPaused();
+                LOG.debug("Performing action.");
 
-                while (paused) {
-                    Thread.sleep(15);
-                    System.out.println("x");
-                }
+                // Choose village to perform on it one order.
+                performNextOrderOnThisVillage = villagesMultipliedByPriorities.get( random.nextInt(villagesMultipliedByPriorities.size()) );
+                buildingOrder = performNextOrderOnThisVillage.getBuildingQueue().poll();
 
-                System.out.println("________________________________________________________");
-                if (order != null) {
-                    if (order.getWhat() != null) {
+                // Build
+                if (buildingOrder != null) {
+                    LOG.info("Building " +buildingOrder.toString() +" in "+ performNextOrderOnThisVillage);
+                    if (buildingOrder.getWhat() != null) {
                         // Dorf2 build order.
-                        travianApi.dorf2Build(order.getWhere(), order.getWhat());
+                        travianApi.dorf2Build(buildingOrder.getWhere(), buildingOrder.getWhat());
                     } else {
                         // Dorf1 build order.
-                        travianApi.dorf1Build(order.getWhere());
+                        travianApi.dorf1Build(buildingOrder.getWhere());
                     }
                 }
+
             } catch (InvocationTargetException e) {
                 Throwable cause = e.getCause();
                 if (cause instanceof BuildingQueueIsFullException) {
-                    LOG.warn("Full building queue when was building " + order.getWhat()+ " on " + order.getWhere());
-                    currentVillage.getBuildingQueue().add(order); // Send it back to the queue.
+                    LOG.warn("Full building queue when was building " + buildingOrder.getWhat()+ " on " + buildingOrder.getWhere());
+                    performNextOrderOnThisVillage.getBuildingQueue().add(buildingOrder); // Send it back to the queue.
                 }
-            } catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | IOException e) {
                 e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOG.error(e.getMessage());
             }
-
         }
+
+    }
+
+    private void waitIfPaused() {
+        try {
+            while (paused) {
+                LOG.info("Paused...");
+                synchronized (this) {
+                    this.wait();
+                }
+            }
+        } catch (InterruptedException e) {
+            LOG.info("Continue!");
+        }
+    }
+
+    private void initApplicationData() {
+        // Init villagesMultipliedByPriorities array that is used when choosing which village to process.
+        villagesMultipliedByPriorities.clear();
+        for (Map.Entry<Integer, Village> entry : gameData.getVillages().entrySet()) {
+            Village v = entry.getValue();
+            for (int i = 0; i < v.getPriority(); i++) {
+                villagesMultipliedByPriorities.add(v);
+            }
+        }
+
     }
 
     @Override

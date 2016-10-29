@@ -9,6 +9,7 @@ import java.util.*;
  * Created by nonu on 10/5/2016.
  */
 public class Village {
+    // GAME related data (parsed from the game)
     @JsonView
     private String name;
     @JsonView
@@ -21,8 +22,13 @@ public class Village {
     private Map<Resource, Long> availableResources = new HashMap<>(4);
     @JsonView
     private boolean isCapital = true;
+
+    // APPLICATION LOGIC related data
     @JsonView
     private Queue<BuildingOrder> buildingQueue = new LinkedList<>();
+    @JsonView
+    private int priority = 1;
+
 
     public Village() {
         availableResources.put(Resource.WOOD, -1L);
@@ -92,6 +98,17 @@ public class Village {
 
     public void setBuildingQueue(Queue<BuildingOrder> buildingQueue) {
         this.buildingQueue = buildingQueue;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        if (priority < 0) {
+            throw new IllegalArgumentException("Priority has to be more or equal to zero.");
+        }
+        this.priority = priority;
     }
 
     public enum Resource {
