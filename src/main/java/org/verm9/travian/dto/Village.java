@@ -131,11 +131,7 @@ public class Village {
 
     @Override
     public String toString() {
-        return "Village{" +
-                "coordinates=" + coordinates +
-                ", name='" + name + '\'' +
-                ", isCapital=" + isCapital +
-                '}';
+        return "Village {" + name + "}";
     }
 
 }

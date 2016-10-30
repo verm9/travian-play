@@ -43,6 +43,13 @@ public class ApplicationControllerImpl implements ApplicationController {
 
     @Override
     public void changeVillagePriority(int villageId, int priority) {
+        LOG.info("Village " + villageId + ": priority " + priority + " is set.");
         central.changeVillagePriority(villageId, priority);
+    }
+
+    @Override
+    public void buildAllToMaxLevel(int villageId) {
+        LOG.info("Village " + villageId + ": building all to max level.");
+        central.buildAllToMaxLevel();
     }
 }

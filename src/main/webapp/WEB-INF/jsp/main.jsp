@@ -86,7 +86,7 @@
         getGameData();
         setInterval(function () {
             getGameData();
-        }, 20009);
+        }, 2000);
 
     });
 
@@ -122,7 +122,7 @@
         for (var index in gameData.villages) {
             var v = villages[index];
             innerHTML += "<tr id='"+index+"'>";
-            innerHTML += "<td class='villageName'>" + v.name + "<br/>("+v.coordinates.x+"|"+v.coordinates.y+")<br/>id: "+ index +"</td>";
+            innerHTML += "<td class='villageName' rowspan=2>" + v.name + "<br/>("+v.coordinates.x+"|"+v.coordinates.y+")<br/>id: "+ index +"</td>";
 
             innerHTML += "<td class='resources'>" +
                     "<div class='wood' data-toggle='tooltip' data-placement='top' title='WOOD'>"+v.availableResources.WOOD+"</div>" +
@@ -158,7 +158,7 @@
 
             innerHTML += "<td><table class=\"dorf2\"><tr>";
             if (!jQuery.isEmptyObject(v.dorf2.buildings)) {
-                for (var buildingIndex in v.dorf2.buildings.sort()) {
+                for (var buildingIndex in v.dorf2.buildings) {
                     var b = v.dorf2.buildings[buildingIndex];
                     var type = "<div data-toggle=\"tooltip\" data-placement=\"top\" title=\"" + b.type + "\">" + b.type.substring(0, 1) + "</div>";
                     innerHTML += "<td>" + type + "<br/>" + b.level + "</td>";
@@ -176,6 +176,14 @@
             innerHTML += "</div></td>";
 
             innerHTML += "</tr>";
+
+            innerHTML += "<tr id='"+index+"'>";
+
+            innerHTML += "<td colspan=5 class='buttons_row'>";
+            innerHTML += "<button type='button' class='maxAllBuildings btn btn-primary btn-sm'>Build all to max level</button>";
+            innerHTML += "</td>";
+
+            innerHTML += "</tr>";
         }
         innerHTML += "</tbody>";
 
@@ -186,6 +194,27 @@
         $('.prioritySet2').click(function() { setPriority($(this).closest('tr').attr('id'), 2); });
         $('.prioritySet5').click(function() { setPriority($(this).closest('tr').attr('id'), 5); });
         $('.prioritySet10').click(function() { setPriority($(this).closest('tr').attr('id'), 10); });
+        $('.maxAllBuildings').click(function() { maxAllBuildings($(this).closest('tr').attr('id')); });
+    }
+
+    function maxAllBuildings(villageId) {
+        $.ajax({
+            type: "GET",
+            contentType : "application/json",
+            url: ajaxUrl + "maxAllBuildings",
+            data : {villageId: villageId},
+            timeout : 100000,
+            success : function(data) {
+                console.log("SUCCESS: ", data);
+            },
+            error : function(e) {
+                console.log("ERROR: ", e);
+                display(e);
+            },
+            done : function(e) {
+                console.log("DONE");
+            }
+        });
     }
 
     function setPriority(villageId, priority) {
@@ -193,7 +222,7 @@
             type: "GET",
             contentType : "application/json",
             url: ajaxUrl + "changePriority",
-            dataType : "json",
+            data : {villageId: villageId, priority: priority},
             timeout : 100000,
             success : function(data) {
                 console.log("SUCCESS: ", data);

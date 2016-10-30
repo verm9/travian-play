@@ -32,5 +32,10 @@ public class AjaxController {
         applicationController.changeVillagePriority(villageId, priority);
     }
 
+    @RequestMapping(value = "/ajax/maxAllBuildings", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void buildAllToMaxLevel(@RequestParam int villageId) {
+        applicationController.buildAllToMaxLevel(villageId);
+    }
+
 }
 

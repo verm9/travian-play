@@ -27,7 +27,7 @@ public class CentralImpl extends Thread implements Central {
     private TravianApi travianApi;
 
     private GameData gameData = new GameData();
-    private List<Village> villagesMultipliedByPriorities = new ArrayList<>();
+    private final List<Village> villagesMultipliedByPriorities = new ArrayList<>();
 
     private boolean paused = true;
 
@@ -63,12 +63,16 @@ public class CentralImpl extends Thread implements Central {
 
                 // Choose village to perform on it one order.
                 synchronized (villagesMultipliedByPriorities) { // it may be accessed from controller
-                    performNextOrderOnThisVillage = villagesMultipliedByPriorities.get( random.nextInt(villagesMultipliedByPriorities.size()) );
+                    if (villagesMultipliedByPriorities.size() > 0) {
+                        performNextOrderOnThisVillage = villagesMultipliedByPriorities.get(random.nextInt(villagesMultipliedByPriorities.size()));
+                    } else {
+                        continue; // every village has priority 00
+                    }
                 }
                 buildingOrder = performNextOrderOnThisVillage.getBuildingQueue().poll();
 
                 // Choose village
-                travianApi.changeVillage(performNextOrderOnThisVillage.getId());
+                changeVillage(performNextOrderOnThisVillage.getId());
 
                 // Build
                 if (buildingOrder != null) {
@@ -94,9 +98,19 @@ public class CentralImpl extends Thread implements Central {
             } catch (NoSuchMethodException | IllegalAccessException | IOException e) {
                 e.printStackTrace();
                 LOG.error(e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOG.error(e.getMessage());
             }
         }
 
+    }
+
+    private void changeVillage(int id) throws NoSuchMethodException, IOException, IllegalAccessException, InvocationTargetException {
+        if (getCurrentVillage().getId() != id) {
+            travianApi.changeVillage(id);
+            setCurrentVillage(id);
+        }
     }
 
     private void waitIfPaused() {

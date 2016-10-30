@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -62,7 +63,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
                 String build = "/dorf1.php?";
                 int i = 0;
                 for (Map.Entry<String, String> keyValue : data.getData().entrySet()) {
-                    build += keyValue.getKey() + "=" + keyValue.getValue();
+                    build += URLEncoder.encode(keyValue.getKey(), "UTF-8") + "=" + keyValue.getValue();
                     if (i++ == 0)
                         build += "&";
                 }
