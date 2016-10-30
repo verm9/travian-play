@@ -2,7 +2,6 @@ package org.verm9.travian.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import java.awt.*;
 import java.util.*;
 
 /**
@@ -14,6 +13,8 @@ public class Village {
     private String name;
     @JsonView
     private Point coordinates;
+    @JsonView
+    private int id;
     @JsonView
     private Dorf1 dorf1 = new Dorf1();
     @JsonView
@@ -37,8 +38,9 @@ public class Village {
         availableResources.put(Resource.CROP, -1L);
     }
 
-    public Village(String name, Point coordinates) {
+    public Village(int id, String name, Point coordinates) {
         this();
+        this.id = id;
         this.name = name;
         this.coordinates = coordinates;
     }
@@ -106,9 +108,18 @@ public class Village {
 
     public void setPriority(int priority) {
         if (priority < 0) {
-            throw new IllegalArgumentException("Priority has to be more or equal to zero.");
+            this.priority = 0;
+        } else {
+            this.priority = priority;
         }
-        this.priority = priority;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public enum Resource {
@@ -126,4 +137,5 @@ public class Village {
                 ", isCapital=" + isCapital +
                 '}';
     }
+
 }

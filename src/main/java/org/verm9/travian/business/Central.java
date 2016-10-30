@@ -24,6 +24,8 @@ public interface Central extends Runnable{
 
     Village getVillage(Integer id);
 
+    void changeVillagePriority(int villageId, int priority);
+
     boolean isPaused();
 
     void setPaused(boolean paused);

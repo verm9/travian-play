@@ -40,4 +40,9 @@ public class ApplicationControllerImpl implements ApplicationController {
         // Choose where to build. Create and add a BuildOrder to central's building queue.
         // Don't choose chosen building spots (which are free in-game, but occupied by present building queue.
     }
+
+    @Override
+    public void changeVillagePriority(int villageId, int priority) {
+        central.changeVillagePriority(villageId, priority);
+    }
 }

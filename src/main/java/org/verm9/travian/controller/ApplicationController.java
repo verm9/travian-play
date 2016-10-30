@@ -12,4 +12,7 @@ public interface ApplicationController {
     void buildAtDorf2(int villageId, Dorf2.Building.Type what);
 
     boolean switchRunningState();
+
+
+    void changeVillagePriority(int villageId, int priority);
 }

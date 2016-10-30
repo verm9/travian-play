@@ -1,0 +1,21 @@
+#gameDataTable {  }
+#gameDataTable>tbody>tr>td {
+    padding: 5px;
+}
+
+.villageName {
+    width: 140px;
+}
+
+.dorf1 {
+    font-size: 12px;
+}
+.dorf1>tbody>tr>td {
+    padding: 2px;
+}
+
+.crop {background-color: #FFEAA4;}
+.clay {background-color: #F9C89B;}
+.iron {background-color: #CEE9E9;}
+.wood {background-color: #E2C8BA;}
+.fullyUpgraded {background-color: #AAFFAA;}

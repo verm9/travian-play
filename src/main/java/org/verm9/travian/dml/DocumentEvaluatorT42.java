@@ -2,7 +2,6 @@ package org.verm9.travian.dml;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
-import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
@@ -13,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.verm9.travian.business.Central;
 import org.verm9.travian.dto.Dorf1;
 import org.verm9.travian.dto.Dorf2;
+import org.verm9.travian.dto.Point;
 import org.verm9.travian.dto.Village;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -379,7 +378,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
             if (e.attr("class").contains("active")) {
                 central.setCurrentVillage(Integer.parseInt(id));
             }
-            Village toAdd = new Village( name, new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1])) );
+            Village toAdd = new Village( Integer.parseInt(id), name, new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1])) );
             central.addNewVillageIfNotAdded(Integer.parseInt(id), toAdd);
         }
     }

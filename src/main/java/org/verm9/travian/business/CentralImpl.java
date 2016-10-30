@@ -50,7 +50,7 @@ public class CentralImpl extends Thread implements Central {
         }
 
         // Init advanced data which is used to perform advanced actions.
-        initApplicationData();
+        updateApplicationData();
 
         // Main loop.
         Random random = new Random();
@@ -60,11 +60,15 @@ public class CentralImpl extends Thread implements Central {
         while(true) {
             try {
                 waitIfPaused();
-                LOG.debug("Performing action.");
 
                 // Choose village to perform on it one order.
-                performNextOrderOnThisVillage = villagesMultipliedByPriorities.get( random.nextInt(villagesMultipliedByPriorities.size()) );
+                synchronized (villagesMultipliedByPriorities) { // it may be accessed from controller
+                    performNextOrderOnThisVillage = villagesMultipliedByPriorities.get( random.nextInt(villagesMultipliedByPriorities.size()) );
+                }
                 buildingOrder = performNextOrderOnThisVillage.getBuildingQueue().poll();
+
+                // Choose village
+                travianApi.changeVillage(performNextOrderOnThisVillage.getId());
 
                 // Build
                 if (buildingOrder != null) {
@@ -76,6 +80,9 @@ public class CentralImpl extends Thread implements Central {
                         // Dorf1 build order.
                         travianApi.dorf1Build(buildingOrder.getWhere());
                     }
+                } else {
+                    // Just update dorf2.
+                    travianApi.getBuldings();
                 }
 
             } catch (InvocationTargetException e) {
@@ -105,13 +112,15 @@ public class CentralImpl extends Thread implements Central {
         }
     }
 
-    private void initApplicationData() {
-        // Init villagesMultipliedByPriorities array that is used when choosing which village to process.
-        villagesMultipliedByPriorities.clear();
-        for (Map.Entry<Integer, Village> entry : gameData.getVillages().entrySet()) {
-            Village v = entry.getValue();
-            for (int i = 0; i < v.getPriority(); i++) {
-                villagesMultipliedByPriorities.add(v);
+    private void updateApplicationData() {
+        // Update villagesMultipliedByPriorities array that is used when choosing which village to process.
+        synchronized (villagesMultipliedByPriorities) {
+            villagesMultipliedByPriorities.clear();
+            for (Map.Entry<Integer, Village> entry : gameData.getVillages().entrySet()) {
+                Village v = entry.getValue();
+                for (int i = 0; i < v.getPriority(); i++) {
+                    villagesMultipliedByPriorities.add(v);
+                }
             }
         }
 
@@ -157,6 +166,12 @@ public class CentralImpl extends Thread implements Central {
                 getCurrentVillage().getBuildingQueue().add(new BuildingOrder(entry.getKey(), entry.getValue().getType()));
             }
         }
+    }
+
+    @Override
+    public void changeVillagePriority(int villageId, int priority) {
+        getVillage(villageId).setPriority(priority);
+        updateApplicationData();
     }
 
     @Override
