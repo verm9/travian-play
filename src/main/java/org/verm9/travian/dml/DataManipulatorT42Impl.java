@@ -101,9 +101,9 @@ public class DataManipulatorT42Impl implements DataManipulator {
                 Integer type = (Integer) ((Object[]) args[1])[1];
                 String build = "/dorf2.php?";
                 if (data.getData().containsKey("id")) { // build new
-                    build = build + "а=" + data.getData().get("а") + "&id=" + data.getData().get("id") + "&c=" + data.getData().get("c");
+                    build = build + URLEncoder.encode("а", "UTF-8") + "=" + data.getData().get("а") + "&id=" + data.getData().get("id") + "&c=" + data.getData().get("c");
                 } else { // upgrade
-                    build = build + "а=" + data.getData().get("а") + "&c=" + data.getData().get("c");
+                    build = build + URLEncoder.encode("а", "UTF-8") + "=" + data.getData().get("а") + "&c=" + data.getData().get("c");
                 }
 
                 LOG.info("Going to " + server + build);
