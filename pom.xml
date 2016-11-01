@@ -133,6 +133,15 @@
             <version>3.4</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.1</version>
+        </dependency>
+
+
+
         <!-- Need this for json to/from object -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

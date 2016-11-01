@@ -1,5 +1,7 @@
 package org.verm9.travian.dto;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.verm9.travian.dml.WrongBuildingIdException;
 
 import java.util.*;
@@ -8,7 +10,7 @@ import java.util.*;
  * Created by nonu on 10/5/2016.
  */
 public class Dorf2 {
-    private Map<Integer, Building> buildings = new HashMap<>();
+    private BidiMap<Integer, Building> buildings = new DualHashBidiMap();
 
     public static class Building {
         private Type type;
@@ -96,11 +98,11 @@ public class Dorf2 {
         }
     }
 
-    public Map<Integer, Building> getBuildings() {
+    public BidiMap<Integer, Building> getBuildings() {
         return buildings;
     }
 
     public void setBuildings(Map<Integer, Building> buildings) {
-        this.buildings = buildings;
+        this.buildings = new DualHashBidiMap<>(buildings);
     }
 }

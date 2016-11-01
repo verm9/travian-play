@@ -19,7 +19,7 @@
     </bean>
 
     <bean id="dataManipulatorT42" class="org.verm9.travian.dml.DataManipulatorT42Impl">
-        <property name="server" value="http://www.x10.aspidanetwork.com"/>
+        <property name="server" value="http://www.x50000.aspidanetwork.com"/>
     </bean>
 
 

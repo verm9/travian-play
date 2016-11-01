@@ -1,5 +1,6 @@
 package org.verm9.travian.business;
 
+import org.apache.commons.collections4.BidiMap;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.verm9.travian.dto.Dorf2.Building.Type.NO_DATA;
 
 /**
  * Created by nonu on 10/14/2016.
@@ -33,7 +35,7 @@ public class CentralImpl extends Thread implements Central {
 
     @Override
     public void run() {
-        LOG.info("Inside run().");
+        LOG.trace("Inside run().");
         mainCycle();
     }
 
@@ -56,17 +58,17 @@ public class CentralImpl extends Thread implements Central {
         Random random = new Random();
         BuildingOrder buildingOrder = null;
         Village performNextOrderOnThisVillage = null;
-        LOG.info("I'm up to the main loop.");
+        LOG.trace("I'm up to the main loop.");
         while(true) {
             try {
                 waitIfPaused();
 
-                // Choose village to perform on it one order.
+                // Choose village to perform one order on it.
                 synchronized (villagesMultipliedByPriorities) { // it may be accessed from controller
                     if (villagesMultipliedByPriorities.size() > 0) {
                         performNextOrderOnThisVillage = villagesMultipliedByPriorities.get(random.nextInt(villagesMultipliedByPriorities.size()));
                     } else {
-                        continue; // every village has priority 00
+                        continue; // every village has priority 0
                     }
                 }
                 buildingOrder = performNextOrderOnThisVillage.getBuildingQueue().poll();
@@ -167,20 +169,77 @@ public class CentralImpl extends Thread implements Central {
     }
 
     @Override
-    public void buildAllToMaxLevel() {
-        for (Map.Entry<Integer, Dorf1.ResourceField> entry : getCurrentVillage().getDorf1().getFields().entrySet()) {
-            int maxResourceFieldLevel = getCurrentVillage().isCapital() ? 20 : 10;
+    public void buildAllToMaxLevel(int villageId) {
+        Village village = getVillage(villageId);
+        for (Map.Entry<Integer, Dorf1.ResourceField> entry : village.getDorf1().getFields().entrySet()) {
+            int maxResourceFieldLevel = village.isCapital() ? 20 : 10;
             for (int i = entry.getValue().getLevel(); i < maxResourceFieldLevel; i++) {
-                getCurrentVillage().getBuildingQueue().add(new BuildingOrder(entry.getKey(), null));
+                addToBuildingQueue(villageId, new BuildingOrder(entry.getKey(), null));
             }
         }
 
-        for (Map.Entry<Integer, Dorf2.Building> entry : getCurrentVillage().getDorf2().getBuildings().entrySet()) {
+        for (Map.Entry<Integer, Dorf2.Building> entry : village.getDorf2().getBuildings().entrySet()) {
             for (int i = entry.getValue().getLevel(); i < entry.getValue().getType().getMaxLevel(); i++) {
-                getCurrentVillage().getBuildingQueue().add(new BuildingOrder(entry.getKey(), entry.getValue().getType()));
+                addToBuildingQueue(villageId, new BuildingOrder(entry.getKey(), entry.getValue().getType()));
             }
         }
     }
+
+    @Override
+    public void buildAtDorf2(int villageId, Dorf2.Building.Type what, int level) {
+        Village village = getVillage(villageId);
+        BidiMap<Integer, Dorf2.Building> buildings = village.getDorf2().getBuildings();
+
+        // Choose where to build. Create and add a BuildOrder to central's building queue.
+        // Don't choose chosen building spots (which are free in-game, but occupied by present building queue.
+        Integer whereIs = buildings.getKey(what);
+        Integer whereToBuild;
+        int currentLevel = 0;
+        if (whereIs == null) {
+            // building is not built - choose a empty spot for it;
+            whereToBuild = buildings.getKey(NO_DATA);
+        } else {
+            whereToBuild = whereIs;
+            currentLevel = buildings.get(whereIs).getLevel();
+        }
+
+        for (int i = currentLevel; i < what.getMaxLevel(); i++) {
+            addToBuildingQueue( villageId, new BuildingOrder(whereToBuild, what) );
+        }
+    }
+
+    /**
+     * Adds building order. Follows the rule that every order in building orders queue and current village state can't
+     * result in a overleveled state (it's level with fully executed building queue will be higher than it's max level).
+     * In-game queue isn't counted yet.
+     * @param villageId
+     * @param buildingOrder
+     */
+    private void addToBuildingQueue(int villageId, BuildingOrder buildingOrder) {
+        int maxLevel = 0;
+        int currentLevel = 0;
+
+        Village village = getVillage(villageId);
+        if (buildingOrder.getWhere() <= 18) {
+            // Dorf1 resource field build.
+            maxLevel = village.isCapital() ? 20 : 10;
+            currentLevel = village.getDorf1().getFields().get(buildingOrder.getWhere()).getLevel();
+        } else {
+            // Dorf2 build.
+            maxLevel = buildingOrder.getWhat().getMaxLevel();
+            currentLevel = village.getDorf2().getBuildings().get(buildingOrder.getWhere()).getLevel();
+        }
+
+        long count = village.getBuildingQueue().stream()
+                .filter(order -> order.getWhere().equals(buildingOrder.getWhere()))
+                .count();
+
+        if (count + currentLevel < maxLevel) {
+            village.getBuildingQueue().add(buildingOrder);
+        }
+    }
+
+
 
     @Override
     public void changeVillagePriority(int villageId, int priority) {

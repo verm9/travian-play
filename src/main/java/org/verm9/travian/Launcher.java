@@ -41,7 +41,6 @@ public class Launcher {
         }
 
         int villageId = applicationController.getGameData().getVillages().entrySet().iterator().next().getKey();
-        applicationController.buildAtDorf2(villageId, Dorf2.Building.Type.RALLY_POINT);
         applicationController.switchRunningState();
 
         try {

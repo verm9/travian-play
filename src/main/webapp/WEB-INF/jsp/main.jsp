@@ -24,6 +24,25 @@
 </div>
 
 <div id="feedback" style="position: absolute; top: 600px;"></div>
+<div id="buildingModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Building Menu</h4>
+        </div>
+        <div class="modal-body" id="buildingModalContent">
+            <p></p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+
+</div>
+</div>
 </body>
 
 <script type="text/javascript">
@@ -180,7 +199,8 @@
             innerHTML += "<tr id='"+index+"'>";
 
             innerHTML += "<td colspan=5 class='buttons_row'>";
-            innerHTML += "<button type='button' class='maxAllBuildings btn btn-primary btn-sm'>Build all to max level</button>";
+            innerHTML += "<button type='button' class='maxAllBuildingsButton btn btn-primary btn-sm'>Build all to max level</button>";
+            innerHTML += "<button type='button' class='buildingMenuButton btn btn-info btn-xs' data-toggle='modal' data-target='#buildingModal' style='margin-left:8px;'>Building menu<br/><div class='queueLengthMessage'>(<b>"+v.buildingQueue.length+"</b> in building queue)</div></button>";
             innerHTML += "</td>";
 
             innerHTML += "</tr>";
@@ -194,9 +214,37 @@
         $('.prioritySet2').click(function() { setPriority($(this).closest('tr').attr('id'), 2); });
         $('.prioritySet5').click(function() { setPriority($(this).closest('tr').attr('id'), 5); });
         $('.prioritySet10').click(function() { setPriority($(this).closest('tr').attr('id'), 10); });
-        $('.maxAllBuildings').click(function() { maxAllBuildings($(this).closest('tr').attr('id')); });
+        $('.maxAllBuildingsButton').click(function() { maxAllBuildings($(this).closest('tr').attr('id')); });
+        $('.buildingMenuButton').click(function() { drawBuildingMenu($(this).closest('tr').attr('id')); });
     }
 
+    function drawBuildingMenu(villageId) {
+        var buildingModalContentInnerHtml = "<div><table><thead class='menuHeader' align='center'><tr><td>Bulding Queue</td><td>Build</td></tr></thead><tbody><tr><td>"
+        var buildingQueue = gameData.villages[villageId].buildingQueue;
+        if (!jQuery.isEmptyObject(buildingQueue)) {
+            buildingModalContentInnerHtml += "<ul class='buldingQueueList'>";
+            for (var i = 0; i < buildingQueue.length; i++) {
+                var buildingEntry = buildingQueue[i];
+                var what;
+                if (buildingEntry.what == null) {
+                    what = "Resource field";
+                } else {
+                    what = buildingEntry.what;
+                }
+                buildingModalContentInnerHtml += "<li>"+what + " on " + buildingEntry.where + "</li>";
+            }
+            buildingModalContentInnerHtml += "</ul>";
+        } else {
+            buildingModalContentInnerHtml = "<b>Building Queue is Empty.</b>";
+        }
+        buildingModalContentInnerHtml += "</td></tr></tbody></table></div>";
+
+        buildingModalContentInnerHtml += "<td>"
+
+        buildingModalContentInnerHtml += "</td>"
+
+        $('#buildingModalContent').html( buildingModalContentInnerHtml );
+    }
     function maxAllBuildings(villageId) {
         $.ajax({
             type: "GET",

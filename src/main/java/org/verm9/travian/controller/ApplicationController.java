@@ -9,7 +9,7 @@ import org.verm9.travian.dto.GameData;
 public interface ApplicationController {
     GameData getGameData();
 
-    void buildAtDorf2(int villageId, Dorf2.Building.Type what);
+    void buildAtDorf2(int villageId, Dorf2.Building.Type what, int level);
 
     boolean switchRunningState();
 

@@ -35,10 +35,10 @@ public class ApplicationControllerImpl implements ApplicationController {
     }
 
     @Override
-    public void buildAtDorf2(int villageId, Dorf2.Building.Type what) {
+    public void buildAtDorf2(int villageId, Dorf2.Building.Type what, int level) {
         LOG.info("Village " + villageId + ": build " + what);
-        // Choose where to build. Create and add a BuildOrder to central's building queue.
-        // Don't choose chosen building spots (which are free in-game, but occupied by present building queue.
+        central.buildAtDorf2(villageId, what, level);
+
     }
 
     @Override
@@ -50,6 +50,6 @@ public class ApplicationControllerImpl implements ApplicationController {
     @Override
     public void buildAllToMaxLevel(int villageId) {
         LOG.info("Village " + villageId + ": building all to max level.");
-        central.buildAllToMaxLevel();
+        central.buildAllToMaxLevel(villageId);
     }
 }

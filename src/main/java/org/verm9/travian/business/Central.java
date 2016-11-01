@@ -1,5 +1,6 @@
 package org.verm9.travian.business;
 
+import org.verm9.travian.dto.Dorf2;
 import org.verm9.travian.dto.GameData;
 import org.verm9.travian.dto.Village;
 
@@ -18,7 +19,7 @@ public interface Central extends Runnable{
 
     void addNewVillageIfNotAdded(Integer id, Village village);
 
-    void buildAllToMaxLevel();
+    void buildAllToMaxLevel(int villageId);
 
     void mainCycle();
 
@@ -33,4 +34,6 @@ public interface Central extends Runnable{
     boolean isAlive();
 
     void start();
+
+    void buildAtDorf2(int villageId, Dorf2.Building.Type what, int level);
 }
