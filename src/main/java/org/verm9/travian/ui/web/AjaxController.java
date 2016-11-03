@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.verm9.travian.controller.ApplicationController;
+import org.verm9.travian.dto.Dorf2.Building.Type;
 import org.verm9.travian.dto.GameData;
 
 /**
@@ -35,6 +36,11 @@ public class AjaxController {
     @RequestMapping(value = "/ajax/maxAllBuildings", produces = MediaType.APPLICATION_JSON_VALUE)
     public void buildAllToMaxLevel(@RequestParam int villageId) {
         applicationController.buildAllToMaxLevel(villageId);
+    }
+
+    @RequestMapping(value = "/ajax/buildAtDorf2", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void buildAllToMaxLevel(@RequestParam int villageId, @RequestParam Type what, @RequestParam int level) {
+        applicationController.buildAtDorf2(villageId, what, level);
     }
 
 }

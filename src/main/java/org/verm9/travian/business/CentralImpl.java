@@ -78,7 +78,7 @@ public class CentralImpl extends Thread implements Central {
 
                 // Build
                 if (buildingOrder != null) {
-                    LOG.info("Building " +buildingOrder.toString() +" in "+ performNextOrderOnThisVillage);
+                    LOG.info("Attempt of building " + buildingOrder.toString() +" in "+ performNextOrderOnThisVillage);
                     if (buildingOrder.getWhat() != null) {
                         // Dorf2 build order.
                         travianApi.dorf2Build(buildingOrder.getWhere(), buildingOrder.getWhat());
@@ -186,20 +186,30 @@ public class CentralImpl extends Thread implements Central {
     }
 
     @Override
-    public void buildAtDorf2(int villageId, Dorf2.Building.Type what, int level) {
+    public void buildAtDorf2(int villageId, Dorf2.Building.Type what, int level){
         Village village = getVillage(villageId);
         BidiMap<Integer, Dorf2.Building> buildings = village.getDorf2().getBuildings();
 
+        // Throw exception - building list is empty (dorf2 hasn't been visited and parsed before)
+        if ( buildings.isEmpty() ) {
+            throw new Dorf2IsNotParsedException();
+        }
+
         // Choose where to build. Create and add a BuildOrder to central's building queue.
         // Don't choose chosen building spots (which are free in-game, but occupied by present building queue.
-        Integer whereIs = buildings.getKey(what);
+        Integer whereIs = null;
+        for (BidiMap.Entry<Integer, Dorf2.Building> e : buildings.entrySet()) {
+            if (e.getValue().getType() == what) {
+                whereIs = e.getKey();
+            }
+        }
         Integer whereToBuild;
         int currentLevel = 0;
         if (whereIs == null) {
             // building is not built - choose a empty spot for it;
             whereToBuild = buildings.getKey(NO_DATA);
             if (whereToBuild == null) {
-                LOG.error("No empty slot for building" + what + " in " + village);
+                LOG.error("No empty slot for building " + what + " in " + village);
                 throw new NoFreeSpaceForBuildingException();
             }
         } else {
