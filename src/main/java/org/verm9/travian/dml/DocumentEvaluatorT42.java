@@ -65,7 +65,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
 
     @Override
     public void dorf1Evaluator(Document document, Object... args) {
-        logger.info("Parsing dorf1...");
+        logger.trace("Parsing dorf1...");
 
         parseVillagesList(document);
 
@@ -156,26 +156,43 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
 
     @Override
     public void dorf2Evaluator(Document document, Object... args) {
-        logger.info("Parsing dorf2...");
+        logger.trace("Parsing dorf2...");
 
         parseVillagesList(document);
 
-        Elements buildings = document.getElementById("clickareas").getElementsByTag("area");
+        // Get <map> with clickareas. It may content an upgrade's price.
+        Element buildingElement = document.getElementById("clickareas");
 
         Map<Integer, Dorf2.Building> result = new HashMap<>();
-        for (Element e : buildings) {
-            String href = e.attr("href");
-            Integer id = Integer.valueOf( href.substring(href.lastIndexOf("=") + 1) );
+        Integer id = 19; // id of first building in dorf2
 
-            String title = e.attr("title");
+        // Get <img> with building. Next <div> will be containing palisade.
+        while(  !( buildingElement = buildingElement.nextElementSibling() ).tagName().equals("div")  ) {
             Dorf2.Building.Type type = null;
             Integer level = null;
-            if (title.equals("Building is fully upgraded")) {
+            String title = buildingElement.attr("alt");
+            if (title.equals("Construction Site")) {
                 type = Dorf2.Building.Type.NO_DATA;
                 level = 0;
+            } else if (title.contains("Rally Point")) {
+                String[] temp = title.split(" ");
+                if (temp.length == 3) {
+                    level = Integer.valueOf(temp[2]);
+                } else {
+                    // Rally point lvl zero doesn't have a note about it's level.
+                    level = 0;
+                }
+                type = Dorf2.Building.Type.RALLY_POINT;
             } else {
-                String name = StringUtils.substringBetween(title, "<b>", "</b>");
-                switch(name) {
+                String[] temp = title.split(" Level ");
+                String name = temp[0];
+                if (temp.length == 2) {
+                    level = Integer.valueOf(temp[1]);
+                } else {
+                    // Rally point lvl zero doesn't have a note about it's level.
+                    level = 0;
+                }
+                switch(name.trim()) {
                     case "Main Building":
                         type = Dorf2.Building.Type.MAIN_BUILDING;
                         break;
@@ -254,11 +271,23 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
                     default:
                         throw new UnexpectedLocalizationException();
                 }
-                level = Integer.valueOf(StringUtils.substringBetween(title, "level ", "</div>"));
             }
             Dorf2.Building building = new Dorf2.Building(type, level);
-            result.put(id, building);
+            result.put(id++, building);
         }
+
+        // Now process the palisade.
+        Element palisadeData = document.getElementById("clickareas").getElementsByTag("area")
+                .last().nextElementSibling();
+        Integer level;
+        if (palisadeData != null) {
+            level = Integer.valueOf(palisadeData.attr("alt").split(" level ")[1]);
+        } else {
+            level = 0;
+        }
+        result.put(id, new Dorf2.Building(Dorf2.Building.Type.PALISADE, level));
+
+
         central.getCurrentVillage().setAvailableResources( parseResourceCount(document) );
         central.getCurrentVillage().getDorf2().setBuildings(result);
     }

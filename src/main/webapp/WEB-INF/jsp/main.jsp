@@ -240,7 +240,9 @@
         buildingModalContentInnerHtml += "</td></tr></tbody></table></div>";
 
         buildingModalContentInnerHtml += "<td>"
-
+        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildBMainBuildingTo20Button btn btn-primary btn-xs'>Build main building to 20 level</button>";
+        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildBMainBuildingTo20Button btn btn-primary btn-xs'>Build main building to 20 level</button>";
+        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildBMainBuildingTo20Button btn btn-primary btn-xs'>Build main building to 20 level</button>";
         buildingModalContentInnerHtml += "</td>"
 
         $('#buildingModalContent').html( buildingModalContentInnerHtml );

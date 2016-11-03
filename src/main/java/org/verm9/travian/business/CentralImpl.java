@@ -198,6 +198,10 @@ public class CentralImpl extends Thread implements Central {
         if (whereIs == null) {
             // building is not built - choose a empty spot for it;
             whereToBuild = buildings.getKey(NO_DATA);
+            if (whereToBuild == null) {
+                LOG.error("No empty slot for building" + what + " in " + village);
+                throw new NoFreeSpaceForBuildingException();
+            }
         } else {
             whereToBuild = whereIs;
             currentLevel = buildings.get(whereIs).getLevel();
