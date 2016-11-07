@@ -240,16 +240,18 @@
         }
 
         buildingModalContentInnerHtml += "</td><td>"
-        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildBMainBuildingTo20Button btn btn-primary btn-xs'>Build main building to 20 level</button>";
-        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildBMainBuildingTo20Button btn btn-primary btn-xs'>Build main building to 20 level</button>";
-        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildBMainBuildingTo20Button btn btn-primary btn-xs'>Build main building to 20 level</button>";
+        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildMainBuildingTo20Button btn btn-primary btn-xs'>Build main building to 20 level</button><br/>";
+        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildBarracksTo20Button btn btn-primary btn-xs'>Build barracks to 20 level</button><br/>";
+        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildStableTo20Button btn btn-primary btn-xs'>Build stable to 20 level</button><br/>";
         buildingModalContentInnerHtml += "</td>"
 
         buildingModalContentInnerHtml += "</td></tr></tbody></table></div>";
 
 
         $('#buildingModalContent').html( buildingModalContentInnerHtml );
-        $('.buildBMainBuildingTo20Button').click(function() { buildAtDorf2($(this).closest('tr').attr('id'), "MAIN_BUILDING", 20); });
+        $('.buildMainBuildingTo20Button').click(function() { buildAtDorf2($(this).closest('tr').attr('id'), "MAIN_BUILDING", 20); });
+        $('.buildStableTo20Button').click(function() { buildAtDorf2($(this).closest('tr').attr('id'), "STABLE", 20); });
+        $('.buildBarracksTo20Button').click(function() { buildAtDorf2($(this).closest('tr').attr('id'), "BARRACKS", 20); });
     }
 
     function buildAtDorf2(villageId, what, level) {

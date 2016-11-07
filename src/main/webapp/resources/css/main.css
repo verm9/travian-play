@@ -34,6 +34,11 @@
     font-weight: bold;
 }
 
+.buldingQueueList>li {
+    font-size: 12px;
+    width: 200px;
+}
+
 .crop {background-color: #FFEAA4;}
 .clay {background-color: #F9C89B;}
 .iron {background-color: #CEE9E9;}

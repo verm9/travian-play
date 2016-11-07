@@ -46,6 +46,10 @@ public class Dorf2 {
             STABLE(20, 20,  new Building(ACADEMY, 5),  new Building(SMITHY, 3)),
             TRADE_OFFICE(20, 28,  new Building(STABLE, 10),  new Building(MARKETPLACE, 20));
 
+            private final int maxLevel;
+            private final int id;
+            private final List<Building> requirements;
+
             Type(int maxLevel, int id, Building... requirements) {
                 this.maxLevel = maxLevel;
                 this.id = id;
@@ -56,10 +60,6 @@ public class Dorf2 {
                 this.id = id;
                 this.requirements = null;
             }
-
-            private final int maxLevel;
-            private final int id;
-            private final List<Building> requirements;
 
             public int getMaxLevel() {
                 return maxLevel;
@@ -73,6 +73,10 @@ public class Dorf2 {
             }
             public int getId() {
                 return id;
+            }
+
+            public List<Building> getRequirements() {
+                return requirements;
             }
         }
 

@@ -190,9 +190,16 @@ public class CentralImpl extends Thread implements Central {
         Village village = getVillage(villageId);
         BidiMap<Integer, Dorf2.Building> buildings = village.getDorf2().getBuildings();
 
-        // Throw exception - building list is empty (dorf2 hasn't been visited and parsed before)
+        // Building list is empty (dorf2 hasn't been visited and parsed before)
         if ( buildings.isEmpty() ) {
             throw new Dorf2IsNotParsedException();
+        }
+
+        // Add required buildings to queue first.
+        if (what.getRequirements() != null) {
+            for (Dorf2.Building requirement : what.getRequirements()) {
+                buildAtDorf2(villageId, requirement.getType(), requirement.getLevel());
+            }
         }
 
         // Choose where to build. Create and add a BuildOrder to central's building queue.
@@ -203,22 +210,56 @@ public class CentralImpl extends Thread implements Central {
                 whereIs = e.getKey();
             }
         }
-        Integer whereToBuild;
+        Integer whereToBuild = null;
         int currentLevel = 0;
         if (whereIs == null) {
-            // building is not built - choose a empty spot for it;
-            whereToBuild = buildings.getKey(NO_DATA);
+            //check if the building in queue
+            boolean buildingInBuildingQueue = false;
+            for (BuildingOrder plannedBuilding : village.getBuildingQueue()) {
+                if (plannedBuilding.getWhat().equals(what)) {
+                    buildingInBuildingQueue = true;
+                    whereToBuild = plannedBuilding.getWhere();
+                }
+            }
             if (whereToBuild == null) {
-                LOG.error("No empty slot for building " + what + " in " + village);
-                throw new NoFreeSpaceForBuildingException();
+                // building is not built - choose a empty spot for it;
+                nextSpot:
+                for (BidiMap.Entry<Integer, Dorf2.Building> e : buildings.entrySet()) {
+                    if (e.getValue().getType() == NO_DATA) {
+
+                        // If there is a planned building on this still empty in-game slot - break, look for a next one.
+                        for (BuildingOrder plannedBuilding : village.getBuildingQueue()) {
+                            if (plannedBuilding.getWhere().equals(e.getKey())) {
+                                LOG.debug("\t\tnextSpot");
+                                continue nextSpot;
+                            }
+                        }
+                        whereToBuild = e.getKey();
+                        break;
+                    }
+                }
+                if (whereToBuild == null) {
+                    LOG.error("No empty slot for building " + what + " in " + village);
+                    throw new NoFreeSpaceForBuildingException();
+                }
             }
         } else {
             whereToBuild = whereIs;
             currentLevel = buildings.get(whereIs).getLevel();
         }
 
-        for (int i = currentLevel; i < what.getMaxLevel(); i++) {
-            addToBuildingQueue( villageId, new BuildingOrder(whereToBuild, what) );
+        // Upgrade to level which is passed with arg. Or to max for this building.
+        // It might be already be at this level or higher when building queue will be executed.
+        // So let's have it in mind too.
+        Integer finalWhereToBuild = whereToBuild;
+        long countOfEntriesInQueueForThisSpot = village.getBuildingQueue().stream()
+                .filter(order -> order.getWhere().equals(finalWhereToBuild))
+                .count();
+        int upgradeTo = (int) Math.min(level-countOfEntriesInQueueForThisSpot, what.getMaxLevel());
+        for (int i = currentLevel; i < upgradeTo; i++) {
+            BuildingOrder buildingOrder = new BuildingOrder(whereToBuild, what);
+            LOG.debug("Attempting to add " + buildingOrder);
+            addToBuildingQueue( villageId, buildingOrder);
         }
     }
 
@@ -248,7 +289,10 @@ public class CentralImpl extends Thread implements Central {
                 .filter(order -> order.getWhere().equals(buildingOrder.getWhere()))
                 .count();
 
+
+        LOG.debug("\tBuilding queue lvl comparison: " + "(" + count+ " + " + currentLevel + ")" + " < " + maxLevel);
         if (count + currentLevel < maxLevel) {
+            LOG.debug(buildingOrder + " is added.");
             village.getBuildingQueue().add(buildingOrder);
         }
     }
