@@ -210,6 +210,7 @@
         $('#gameDataTable').html(innerHTML);
         $('[data-toggle="tooltip"]').tooltip();
 
+        $('.prioritySet0').click(function() { setPriority($(this).closest('tr').attr('id'), 0); });
         $('.prioritySet1').click(function() { setPriority($(this).closest('tr').attr('id'), 1); });
         $('.prioritySet2').click(function() { setPriority($(this).closest('tr').attr('id'), 2); });
         $('.prioritySet5').click(function() { setPriority($(this).closest('tr').attr('id'), 5); });
