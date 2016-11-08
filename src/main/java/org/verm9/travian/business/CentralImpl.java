@@ -96,6 +96,9 @@ public class CentralImpl extends Thread implements Central {
                 if (cause instanceof BuildingQueueIsFullException) {
                     LOG.warn("Full building queue when was building " + buildingOrder.getWhat()+ " on " + buildingOrder.getWhere());
                     performNextOrderOnThisVillage.getBuildingQueue().add(buildingOrder); // Send it back to the queue.
+                } else {
+                    e.printStackTrace();
+                    LOG.error(e.getMessage());
                 }
             } catch (NoSuchMethodException | IllegalAccessException | IOException e) {
                 e.printStackTrace();
@@ -216,6 +219,12 @@ public class CentralImpl extends Thread implements Central {
             //check if the building in queue
             boolean buildingInBuildingQueue = false;
             for (BuildingOrder plannedBuilding : village.getBuildingQueue()) {
+
+                // Exclude dorf1 build orders
+                if (plannedBuilding.getWhat() == null) {
+                    continue;
+                }
+
                 if (plannedBuilding.getWhat().equals(what)) {
                     buildingInBuildingQueue = true;
                     whereToBuild = plannedBuilding.getWhere();

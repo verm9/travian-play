@@ -25,7 +25,7 @@
 
 <div id="feedback" style="position: absolute; top: 600px;"></div>
 <div id="buildingModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
 
     <!-- Modal content-->
     <div class="modal-content">
@@ -219,7 +219,7 @@
     }
 
     function drawBuildingMenu(villageId) {
-        var buildingModalContentInnerHtml = "<div><table><thead class='menuHeader' align='center'><tr><td>Bulding Queue</td><td>Build</td></tr></thead><tbody>" +
+        var buildingModalContentInnerHtml = "<div><table class='buildingMenuTable'><thead class='menuHeader' align='center'><tr><td>Bulding Queue</td><td>Build</td><td>Building Sets</td></tr></thead><tbody>" +
                 "<tr id='"+villageId+"' ><td>"
         var buildingQueue = gameData.villages[villageId].buildingQueue;
         if (!jQuery.isEmptyObject(buildingQueue)) {
@@ -243,6 +243,11 @@
         buildingModalContentInnerHtml += "<button type='button' class='buildButton buildMainBuildingTo20Button btn btn-primary btn-xs'>Build main building to 20 level</button><br/>";
         buildingModalContentInnerHtml += "<button type='button' class='buildButton buildBarracksTo20Button btn btn-primary btn-xs'>Build barracks to 20 level</button><br/>";
         buildingModalContentInnerHtml += "<button type='button' class='buildButton buildStableTo20Button btn btn-primary btn-xs'>Build stable to 20 level</button><br/>";
+        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildPalisadeTo20Button btn btn-primary btn-xs'>Build palisade to 20 level</button><br/>";
+        buildingModalContentInnerHtml += "</td>"
+
+        buildingModalContentInnerHtml += "<td>"
+        buildingModalContentInnerHtml += "<button type='button' class='buildButton buildPattern1 btn btn-primary btn-xs'>Build pattern #1</button><br/>";
         buildingModalContentInnerHtml += "</td>"
 
         buildingModalContentInnerHtml += "</td></tr></tbody></table></div>";
@@ -250,8 +255,32 @@
 
         $('#buildingModalContent').html( buildingModalContentInnerHtml );
         $('.buildMainBuildingTo20Button').click(function() { buildAtDorf2($(this).closest('tr').attr('id'), "MAIN_BUILDING", 20); });
-        $('.buildStableTo20Button').click(function() { buildAtDorf2($(this).closest('tr').attr('id'), "STABLE", 20); });
         $('.buildBarracksTo20Button').click(function() { buildAtDorf2($(this).closest('tr').attr('id'), "BARRACKS", 20); });
+        $('.buildStableTo20Button').click(function() { buildAtDorf2($(this).closest('tr').attr('id'), "STABLE", 20); });
+        $('.buildPalisadeTo20Button').click(function() { buildAtDorf2($(this).closest('tr').attr('id'), "PALISADE", 20); });
+
+        $('.buildPattern1').click(function() { buildPatttern($(this).closest('tr').attr('id'), 1); });
+    }
+
+    function buildPatttern(villageId, pattern) {
+        $.ajax({
+            type: "GET",
+            contentType : "application/json",
+            url: ajaxUrl + "buildPattern",
+            data : {villageId: villageId,
+                pattern: pattern},
+            timeout : 100000,
+            success : function(data) {
+                console.log("SUCCESS: ", data);
+            },
+            error : function(e) {
+                console.log("ERROR: ", e);
+                display(e);
+            },
+            done : function(e) {
+                console.log("DONE");
+            }
+        });
     }
 
     function buildAtDorf2(villageId, what, level) {

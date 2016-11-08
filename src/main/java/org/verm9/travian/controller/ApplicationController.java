@@ -17,4 +17,6 @@ public interface ApplicationController {
     void changeVillagePriority(int villageId, int priority);
 
     void buildAllToMaxLevel(int villageId);
+
+    void buildPattern(int villageId, int pattern);
 }

@@ -297,7 +297,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
         Map<String, String> data = new HashMap<>();
         Integer id = (Integer) args[1];
         Integer placeId = (Integer) args[0];
-        logger.info("Parsing dorf2 building page for buildPlace"+placeId+"...");
+        logger.info("Parsing dorf2 building page for buildPlace " + placeId + "...");
 
         // Check if building queue can get one more building
         Element first = document.select("div#contract").first();
@@ -339,6 +339,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
             if (isUpgrade) {
                 data.put(spotIdArr[0], spotIdArr[1]);
                 data.put(csrfArr[0], csrfArr[1]);
+                break; // There are two buttons int the barracks.
             } else {
                 // there are several buttons with different buildings
                 if (buildingArr[1].equals(String.valueOf(id))) {

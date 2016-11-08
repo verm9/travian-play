@@ -43,5 +43,10 @@ public class AjaxController {
         applicationController.buildAtDorf2(villageId, what, level);
     }
 
+    @RequestMapping(value = "/ajax/buildPattern", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void buildPattern(@RequestParam int villageId, @RequestParam int pattern) {
+        applicationController.buildPattern(villageId, pattern);
+    }
+
 }
 

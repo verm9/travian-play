@@ -52,4 +52,23 @@ public class ApplicationControllerImpl implements ApplicationController {
         LOG.info("Village " + villageId + ": building all to max level.");
         central.buildAllToMaxLevel(villageId);
     }
+
+    @Override
+    public void buildPattern(int villageId, int pattern) {
+        LOG.info("Village " + villageId + ": building Pattern #1.");
+        central.buildAllToMaxLevel(villageId);
+
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.MAIN_BUILDING, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.WAREHOUSE, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.GRANARY, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.RALLY_POINT, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.BARRACKS, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.ACADEMY, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.SMITHY, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.STABLE, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.RESIDENCE, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.TREASURY, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.TOWN_HALL, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.MARKETPLACE, 19);
+    }
 }
