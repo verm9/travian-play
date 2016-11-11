@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.verm9.travian.business.Central;
 import org.verm9.travian.dto.Dorf2;
 import org.verm9.travian.dto.GameData;
+import org.verm9.travian.model.LoginData;
 
 /**
  * Created by nonu on 10/29/2016.
@@ -22,6 +23,28 @@ public class ApplicationControllerImpl implements ApplicationController {
     @Override
     public GameData getGameData() {
         return central.getGameData();
+    }
+
+    @Override
+    public boolean isLoginDataPresent() {
+        return central.isLoginDataPresent();
+    }
+
+    @Override
+    public void setLoginData(LoginData loginData) {
+        central.setLoginData(loginData.getServer(), loginData.getLogin(), loginData.getPassword());
+    }
+
+    @Override
+    public void stop() {
+        central.interrupt();
+    }
+
+    @Override
+    public synchronized void start() {
+        if (!central.isAlive()) {
+            central.start();
+        }
     }
 
     @Override
@@ -69,6 +92,13 @@ public class ApplicationControllerImpl implements ApplicationController {
         central.buildAtDorf2(villageId, Dorf2.Building.Type.RESIDENCE, 20);
         central.buildAtDorf2(villageId, Dorf2.Building.Type.TREASURY, 20);
         central.buildAtDorf2(villageId, Dorf2.Building.Type.TOWN_HALL, 20);
-        central.buildAtDorf2(villageId, Dorf2.Building.Type.MARKETPLACE, 19);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.MARKETPLACE, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.EMBASSY, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.TRADE_OFFICE, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.HEROMANSION, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.IRON_FOUNDRY, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.BRICKWORKS, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.SAWMILL, 20);
+        central.buildAtDorf2(villageId, Dorf2.Building.Type.WORKSHOP, 20);
     }
 }

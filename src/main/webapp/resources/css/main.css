@@ -45,6 +45,11 @@
     width: 200px;
 }
 
+.errorMessage {
+    color: #FF3333;
+    font-size: 16px;
+}
+
 .crop {background-color: #FFEAA4;}
 .clay {background-color: #F9C89B;}
 .iron {background-color: #CEE9E9;}

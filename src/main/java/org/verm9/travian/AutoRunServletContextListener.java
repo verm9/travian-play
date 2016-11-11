@@ -24,13 +24,13 @@ public class AutoRunServletContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        // Notification that the servlet context is about to be shut down.
         LOG.info("Context destroyed.");
-        //Notification that the servlet context is about to be shut down.
     }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        //Notification that the web application initialization process is starting
+        // Notification that the web application initialization process is starting.
         LOG.info("Context initialized.");
 
         // Doesn't make testing difficult since doesn't use getBean.
@@ -39,6 +39,7 @@ public class AutoRunServletContextListener implements ServletContextListener {
                 .getRequiredWebApplicationContext(sce.getServletContext())
                 .getAutowireCapableBeanFactory()
                 .autowireBean(this);
+
         central.start();
     }
 

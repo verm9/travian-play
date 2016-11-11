@@ -19,7 +19,7 @@ public class DataManipulatorT42Impl implements DataManipulator {
     private static final Logger LOG = getLogger(DataManipulatorT42Impl.class);
 
     // set up in spring-app.xml
-    private String server;
+    private volatile String server;
 
     @Autowired
     private DocumentEvaluator documentEvaluator;

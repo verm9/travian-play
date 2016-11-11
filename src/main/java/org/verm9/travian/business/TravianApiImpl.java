@@ -50,4 +50,16 @@ public class TravianApiImpl implements TravianApi {
     public void setCapital() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
         dataManipulator.getPlayerPage.invoke();
     }
+
+    @Override
+    public boolean isLoginDataSet() {
+        return !(dataManipulator.getServer() == null || documentEvaluator.getLogin() == null || documentEvaluator.getPassword() == null);
+    }
+
+    @Override
+    public void setLoginData(String server, String login, String password) {
+        dataManipulator.setServer(server);
+        documentEvaluator.setLogin(login);
+        documentEvaluator.setPassword(password);
+    }
 }

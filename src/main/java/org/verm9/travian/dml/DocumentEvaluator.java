@@ -17,4 +17,12 @@ public interface DocumentEvaluator {
     void dorf2Evaluator(Document document, Object... args);
 
     DataToSend dorf2BuildPageEvaluator(Document document, Object... args);
+
+    String getPassword();
+
+    void setPassword(String password);
+
+    String getLogin();
+
+    void setLogin(String login);
 }

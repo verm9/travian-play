@@ -29,8 +29,8 @@ import static org.verm9.travian.dto.Dorf1.*;
 public class DocumentEvaluatorT42 implements DocumentEvaluator {
     private static final Logger logger = LoggerFactory.getLogger(DocumentEvaluatorT42.class);
 
-    private String password;
-    private String login;
+    private volatile String password;
+    private volatile String login;
 
     @Autowired
     private DataManipulatorT42Impl dataManipulator;
@@ -423,19 +423,22 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
     }
 
 
-
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public void setPassword(String password) {
         this.password = password;
     }
 
+    @Override
     public String getLogin() {
         return login;
     }
 
+    @Override
     public void setLogin(String login) {
         this.login = login;
     }

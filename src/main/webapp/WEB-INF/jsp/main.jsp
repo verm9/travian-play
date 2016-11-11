@@ -7,12 +7,15 @@
     <script type="text/javascript" src="webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="webjars/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="webjars/noty/2.3.8/js/noty/packaged/jquery.noty.packaged.min.js"></script>
+    <title>Travian-play project</title>
 </head>
 <body>
-<h1>Travian-play testing</h1>
+<h1>Travian-play project</h1>
 <div><button type="button" class="btn btn-success btn-lg" id="startButton" style="position: absolute; top: 78px; left: 15px;">Start!</button></div>
+<div><a href="<c:url value="${pageContext.request.contextPath}/quit"/>"><button type="button" class="btn btn-danger btn-xs" id="quitButton" style="position: absolute; top: 18px; right: 15px;">quit</button></a></div>
 <div style="position: absolute; top: 70px; left: 120px;">
     <table id="gameDataTable" class="table-bordered">
+        <thead></thead>
         <tbody>
         <tr>
             <td>
@@ -76,6 +79,27 @@
             });
         }
 
+        // Setup a listener on "quit" button.
+        $("#quitButton").click(function() {
+            $.ajax({
+                type: "GET",
+                contentType : "application/json",
+                url: ajaxUrl + "quit",
+                dataType : "json",
+                timeout : 100000,
+                success : function(data) {
+                    console.log("SUCCESS: ", data);
+                    setupStartButton(data);
+                },
+                error : function(e) {
+                    console.log("ERROR: ", e);
+                    display(e);
+                },
+                done : function(e) {
+                    console.log("DONE");
+                }
+            });
+        });
 
         // Setup a listener on "Start!"/"Pause" button.
         $("#startButton").click(function() {

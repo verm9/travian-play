@@ -28,10 +28,11 @@ public class CentralImpl extends Thread implements Central {
     @Autowired
     private TravianApi travianApi;
 
-    private GameData gameData = new GameData();
+    private GameData gameData = null;
     private final List<Village> villagesMultipliedByPriorities = new ArrayList<>();
 
-    private boolean paused = true;
+    private volatile boolean paused = true;
+    private volatile boolean loginDataPresent = false;
 
     @Override
     public void run() {
@@ -41,7 +42,21 @@ public class CentralImpl extends Thread implements Central {
 
     @Override
     public void mainCycle() {
-        // Login first (and do action on start). After go to the main loop.
+        // Wait until login data is provided.
+        while (!travianApi.isLoginDataSet()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                LOG.info("Stopped in no data provided cycle.");
+                return;
+            }
+        }
+        loginDataPresent = true;
+
+        // Create (recreate) empty GameData.
+        gameData = new GameData();
+
+        // Login (and do action on start). After go to the main loop.
         // TODO: If login session is expired it has to login again.
         LOG.info("Doing init actions.");
         try {
@@ -59,7 +74,7 @@ public class CentralImpl extends Thread implements Central {
         BuildingOrder buildingOrder = null;
         Village performNextOrderOnThisVillage = null;
         LOG.trace("I'm up to the main loop.");
-        while(true) {
+        while(!Thread.currentThread().isInterrupted()) {
             try {
                 waitIfPaused();
 
@@ -108,7 +123,8 @@ public class CentralImpl extends Thread implements Central {
                 LOG.error(e.getMessage());
             }
         }
-
+        loginDataPresent = false;
+        gameData = null;
     }
 
     private void changeVillage(int id) throws NoSuchMethodException, IOException, IllegalAccessException, InvocationTargetException {
@@ -127,7 +143,8 @@ public class CentralImpl extends Thread implements Central {
                 }
             }
         } catch (InterruptedException e) {
-            LOG.info("Continue!");
+            LOG.info("Thread is interrupted.");
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -324,4 +341,18 @@ public class CentralImpl extends Thread implements Central {
         this.paused = paused;
     }
 
+    @Override
+    public void setLoginData(String server, String login, String password) {
+        travianApi.setLoginData(server, login, password);
+    }
+
+    @Override
+    public boolean isLoginDataPresent() {
+        return loginDataPresent;
+    }
+
+    @Override
+    public void setLoginDataPresent(boolean loginDataPresent) {
+        this.loginDataPresent = loginDataPresent;
+    }
 }

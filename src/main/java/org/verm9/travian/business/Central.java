@@ -35,5 +35,13 @@ public interface Central extends Runnable{
 
     void start();
 
+    void interrupt();
+
     void buildAtDorf2(int villageId, Dorf2.Building.Type what, int level);
+
+    void setLoginData(String server, String login, String password);
+
+    boolean isLoginDataPresent();
+
+    void setLoginDataPresent(boolean loginDataPresent);
 }

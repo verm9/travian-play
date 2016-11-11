@@ -20,4 +20,8 @@ public interface TravianApi {
     void changeVillage(int id) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException;
 
     void setCapital() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException;
+
+    boolean isLoginDataSet();
+
+    void setLoginData(String server, String login, String password);
 }

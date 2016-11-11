@@ -56,7 +56,7 @@ abstract public class InvocableTreeNode {
         try {
             Thread.sleep(random.nextInt(1400)+300);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
 
         // Parse it with documentEvaluator if evaluator exists.

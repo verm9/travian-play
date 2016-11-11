@@ -126,6 +126,15 @@
             <version>${jstl.version}</version>
         </dependency>
 
+        <!-- Validation impl for MVC Spring model (+JSR-303)-->
+        <!-- Hibernate Validator -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.2.0.Final</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
