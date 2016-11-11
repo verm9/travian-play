@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by nonu on 10/14/2016.
  */
-public interface Central extends Runnable{
+public interface Central{
 
     Village getCurrentVillage();
     Village setCurrentVillage(Integer villageId);

@@ -21,7 +21,7 @@ import static org.verm9.travian.dto.Dorf2.Building.Type.NO_DATA;
  * Created by nonu on 10/14/2016.
  */
 @Component
-public class CentralImpl extends Thread implements Central {
+public class CentralImpl implements Central {
 
     private static final Logger LOG = getLogger(CentralImpl.class);
 
@@ -34,10 +34,32 @@ public class CentralImpl extends Thread implements Central {
     private volatile boolean paused = true;
     private volatile boolean loginDataPresent = false;
 
+    private InnerThread innerThread;
+
+    private class InnerThread extends Thread {
+        @Override
+        public void run() {
+            LOG.trace("Inside run().");
+            mainCycle();
+        }
+    }
+
     @Override
-    public void run() {
-        LOG.trace("Inside run().");
-        mainCycle();
+    public void start() {
+        innerThread = new InnerThread();
+        innerThread.start();
+    }
+
+    @Override
+    public boolean isAlive() {
+        return innerThread != null && innerThread.isAlive();
+    }
+
+    @Override
+    public void interrupt() {
+        if (innerThread != null) {
+            innerThread.interrupt();
+        }
     }
 
     @Override
@@ -125,6 +147,7 @@ public class CentralImpl extends Thread implements Central {
         }
         loginDataPresent = false;
         gameData = null;
+        innerThread = null;
     }
 
     private void changeVillage(int id) throws NoSuchMethodException, IOException, IllegalAccessException, InvocationTargetException {
