@@ -45,7 +45,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
         try {
             loginForm = pageWithLoginForm.getElementsByClass("innerLoginBox").first().getElementsByTag("form").first();
         } catch (NullPointerException e) {
-            // It might be logged in already. Let's check it.
+            // The app might be logged in already. Let's check it.
             // Next line can throw UnexpectedPageException. Which is right if it is not a login page or page where
             // resources are shown (these are shown on every page but login one.
             parseResourceCount(pageWithLoginForm);
@@ -60,6 +60,10 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
         formData.put("pw", password);
         logger.info("Logging in with " + login);
         Document redirectedToDorf1 = dataManipulator.login(formData);
+
+        // Check if login was successful. Process UnexpectedPageException if not.
+        parseResourceCount(redirectedToDorf1);
+
         dorf1Evaluator(redirectedToDorf1);
     }
 

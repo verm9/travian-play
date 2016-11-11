@@ -22,11 +22,11 @@ public class RootWebController {
     private ApplicationController applicationController;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String getMainPage(ModelMap model) {
+    public ModelAndView getMainPage(ModelMap model) {
         if (applicationController.isLoginDataPresent()) {
-            return "main";
+            return new ModelAndView("main");
         } else {
-            return "enter";
+            return new ModelAndView("enter", "loginData", new LoginData());
         }
 
     }
@@ -50,7 +50,7 @@ public class RootWebController {
         }
         applicationController.setLoginData(loginData);
         applicationController.start();
-        return "main";
+        return "redirect:/";
     }
 
 }

@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.verm9.travian.dml.BuildingQueueIsFullException;
+import org.verm9.travian.dml.UnexpectedPageException;
 import org.verm9.travian.dto.*;
 
 import java.io.IOException;
@@ -86,6 +87,14 @@ public class CentralImpl implements Central {
             travianApi.setCapital();
         } catch (IOException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             LOG.error(e.getMessage());
+        } catch (UnexpectedPageException e) {
+            LOG.error("Login to travian is failed.");
+            loginDataPresent = false;
+            return;
+        } catch (IllegalArgumentException e) {
+            LOG.error(e.getMessage());
+            loginDataPresent = false;
+            return;
         }
 
         // Init advanced data which is used to perform advanced actions.

@@ -152,7 +152,7 @@
     function display(data) {
         var json = "<h4>Ajax Response</h4><pre>"
                 + JSON.stringify(data, null, 4) + "</pre>";
-        $('#feedback').html(json);
+        // $('#feedback').html(json);
     }
 
     // Fills the gameDataTable.
