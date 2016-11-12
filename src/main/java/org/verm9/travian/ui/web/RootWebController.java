@@ -53,4 +53,19 @@ public class RootWebController {
         return "redirect:/";
     }
 
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public ModelAndView login(
+            @RequestParam(value = "error", required = false) String error) {
+
+        ModelAndView model = new ModelAndView();
+        if (error != null) {
+            model.addObject("error", "Invalid  passphrase!");
+        }
+
+        model.setViewName("login");
+
+        return model;
+
+    }
+
 }

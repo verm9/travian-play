@@ -22,5 +22,6 @@
         <property name="server" value="http://www.x10000000.aspidanetwork.com"/>
     </bean>
 
+    <import resource="spring-security.xml"/>
 
 </beans>

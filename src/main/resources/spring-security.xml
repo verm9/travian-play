@@ -1,0 +1,31 @@
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:sec="http://www.springframework.org/schema/security"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                    http://www.springframework.org/schema/security
+	                http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!-- Spring security -->
+    <sec:http pattern="/resources/**" security="none"/>
+    <sec:http pattern="/webjars/**" security="none"/>
+
+    <sec:http auto-config="true">
+        <sec:intercept-url pattern="/login" access="isAnonymous()"/>
+
+        <sec:intercept-url pattern="/**" access="isAuthenticated()"/>
+
+        <sec:form-login login-page="/login" default-target-url="/"
+                        authentication-failure-url="/login?error=true"
+                        login-processing-url="/j_spring_security_check"/>
+        <sec:csrf disabled="true"/>
+    </sec:http>
+
+    <sec:authentication-manager>
+        <sec:authentication-provider>
+            <sec:user-service>
+                <sec:user name="theChosenOne" password="vermilion" authorities="ROLE_USER"/>
+            </sec:user-service>
+        </sec:authentication-provider>
+    </sec:authentication-manager>
+
+</beans:beans>
