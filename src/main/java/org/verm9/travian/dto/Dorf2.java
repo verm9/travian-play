@@ -20,7 +20,7 @@ public class Dorf2 {
         // The enum holds a bunch of metadata about buildings.
         public enum Type {
             NO_DATA(0, -1),
-            MAIN_BUILDING(20, 26),
+            MAIN_BUILDING(20, 15),
             WAREHOUSE(20, 10),
             GRANARY(20, 11),
             RALLY_POINT(20,16),

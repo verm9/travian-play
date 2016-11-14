@@ -305,7 +305,7 @@ public class DocumentEvaluatorT42 implements DocumentEvaluator {
 
         // Check if building queue can get one more building
         Element first = document.select("div#contract").first();
-        if (first.html().contains("All Workers are busy.")) {
+         if (first.html().contains("All Workers are busy.") || first.html().contains("Workers are working.") ) {
             throw new BuildingQueueIsFullException("");
         }
 
