@@ -117,7 +117,7 @@ public class CentralImpl implements Central {
                         continue; // every village has priority 0
                     }
                 }
-                buildingOrder = performNextOrderOnThisVillage.getBuildingQueue().poll();
+                buildingOrder = performNextOrderOnThisVillage.getBuildingDeque().poll();
 
                 // Choose village
                 changeVillage(performNextOrderOnThisVillage.getId());
@@ -141,7 +141,8 @@ public class CentralImpl implements Central {
                 Throwable cause = e.getCause();
                 if (cause instanceof BuildingQueueIsFullException) {
                     LOG.warn("Full building queue when was building " + buildingOrder.getWhat()+ " on " + buildingOrder.getWhere());
-                    performNextOrderOnThisVillage.getBuildingQueue().add(buildingOrder); // Send it back to the queue.
+                    performNextOrderOnThisVillage.getBuildingDeque().addFirst(buildingOrder); // Send it back to the queue.
+
                 } else {
                     e.printStackTrace();
                     LOG.error(e.getMessage());
@@ -267,7 +268,7 @@ public class CentralImpl implements Central {
         if (whereIs == null) {
             //check if the building in queue
             boolean buildingInBuildingQueue = false;
-            for (BuildingOrder plannedBuilding : village.getBuildingQueue()) {
+            for (BuildingOrder plannedBuilding : village.getBuildingDeque()) {
 
                 // Exclude dorf1 build orders
                 if (plannedBuilding.getWhat() == null) {
@@ -286,7 +287,7 @@ public class CentralImpl implements Central {
                     if (e.getValue().getType() == NO_DATA) {
 
                         // If there is a planned building on this still empty in-game slot - break, look for a next one.
-                        for (BuildingOrder plannedBuilding : village.getBuildingQueue()) {
+                        for (BuildingOrder plannedBuilding : village.getBuildingDeque()) {
                             if (plannedBuilding.getWhere().equals(e.getKey())) {
                                 LOG.debug("\t\tnextSpot");
                                 continue nextSpot;
@@ -310,7 +311,7 @@ public class CentralImpl implements Central {
         // It might be already be at this level or higher when building queue will be executed.
         // So let's have it in mind too.
         Integer finalWhereToBuild = whereToBuild;
-        long countOfEntriesInQueueForThisSpot = village.getBuildingQueue().stream()
+        long countOfEntriesInQueueForThisSpot = village.getBuildingDeque().stream()
                 .filter(order -> order.getWhere().equals(finalWhereToBuild))
                 .count();
         int upgradeTo = (int) Math.min(level-countOfEntriesInQueueForThisSpot, what.getMaxLevel());
@@ -343,7 +344,7 @@ public class CentralImpl implements Central {
             currentLevel = village.getDorf2().getBuildings().get(buildingOrder.getWhere()).getLevel();
         }
 
-        long count = village.getBuildingQueue().stream()
+        long count = village.getBuildingDeque().stream()
                 .filter(order -> order.getWhere().equals(buildingOrder.getWhere()))
                 .count();
 
@@ -351,7 +352,7 @@ public class CentralImpl implements Central {
         LOG.debug("\tBuilding queue lvl comparison: " + "(" + count+ " + " + currentLevel + ")" + " < " + maxLevel);
         if (count + currentLevel < maxLevel) {
             LOG.debug(buildingOrder + " is added.");
-            village.getBuildingQueue().add(buildingOrder);
+            village.getBuildingDeque().add(buildingOrder);
         }
     }
 

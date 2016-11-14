@@ -26,7 +26,7 @@ public class Village {
 
     // APPLICATION LOGIC related data
     @JsonView
-    private Queue<BuildingOrder> buildingQueue = new LinkedList<>();
+    private Deque<BuildingOrder> buildingDeque = new LinkedList<>();
     @JsonView
     private int priority = 1;
 
@@ -94,12 +94,12 @@ public class Village {
         isCapital = capital;
     }
 
-    public Queue<BuildingOrder> getBuildingQueue() {
-        return buildingQueue;
+    public Deque<BuildingOrder> getBuildingDeque() {
+        return buildingDeque;
     }
 
-    public void setBuildingQueue(Queue<BuildingOrder> buildingQueue) {
-        this.buildingQueue = buildingQueue;
+    public void setBuildingDeque(Deque<BuildingOrder> buildingDeque) {
+        this.buildingDeque = buildingDeque;
     }
 
     public int getPriority() {

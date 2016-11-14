@@ -224,7 +224,7 @@
 
             innerHTML += "<td colspan=5 class='buttons_row'>";
             innerHTML += "<button type='button' class='maxAllBuildingsButton btn btn-primary btn-sm'>Build all to max level</button>";
-            innerHTML += "<button type='button' class='buildingMenuButton btn btn-info btn-xs' data-toggle='modal' data-target='#buildingModal' style='margin-left:8px;'>Building menu<br/><div class='queueLengthMessage'>(<b>"+v.buildingQueue.length+"</b> in building queue)</div></button>";
+            innerHTML += "<button type='button' class='buildingMenuButton btn btn-info btn-xs' data-toggle='modal' data-target='#buildingModal' style='margin-left:8px;'>Building menu<br/><div class='queueLengthMessage'>(<b>"+v.buildingDeque.length+"</b> in building queue)</div></button>";
             innerHTML += "</td>";
 
             innerHTML += "</tr>";
@@ -246,11 +246,11 @@
     function drawBuildingMenu(villageId) {
         var buildingModalContentInnerHtml = "<div><table class='buildingMenuTable'><thead class='menuHeader' align='center'><tr><td>Bulding Queue</td><td>Build</td><td>Building Sets</td></tr></thead><tbody>" +
                 "<tr id='"+villageId+"' ><td>"
-        var buildingQueue = gameData.villages[villageId].buildingQueue;
-        if (!jQuery.isEmptyObject(buildingQueue)) {
+        var buildingDeque = gameData.villages[villageId].buildingDeque;
+        if (!jQuery.isEmptyObject(buildingDeque)) {
             buildingModalContentInnerHtml += "<ul class='buldingQueueList'>";
-            for (var i = 0; i < buildingQueue.length; i++) {
-                var buildingEntry = buildingQueue[i];
+            for (var i = 0; i < buildingDeque.length; i++) {
+                var buildingEntry = buildingDeque[i];
                 var what;
                 if (buildingEntry.what == null) {
                     what = "Resource field";
